@@ -17,7 +17,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
-    return { title: "Proyek tidak ditemukan" };
+  if (!project) return { title: "Proyek tidak ditemukan" };
 
   const image = buildCoverUrl(project.cover_image_url);
   return {

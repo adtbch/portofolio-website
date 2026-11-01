@@ -22,7 +22,7 @@ export function Header() {
                 <span className="animate-ping absolute inline-flex h-full w-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex h-2 w-2 bg-emerald-500"></span>
               </span>
-              <span>{siteConfig.status.text === "Available for work" || siteConfig.status.text === "Tersedia untuk bekerja" ? "Tersedia untuk bekerja" : siteConfig.status.text}</span>
+              <span>{siteConfig.status.text}</span>
               </div>
               )}
               </div>
@@ -32,12 +32,12 @@ export function Header() {
               <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-              {item.label === "Works" ? "Karya" : item.label === "About" ? "Tentang" : item.label === "Skills" ? "Keahlian" : item.label === "Experience" ? "Pengalaman" : item.label === "Contact" ? "Kontak" : item.label}
-              </Link>
-              ))}
-              </nav>
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
 
         <div className="flex items-center gap-4">
           <Link

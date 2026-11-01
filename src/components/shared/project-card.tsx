@@ -12,8 +12,8 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const imageSrc = buildCoverUrl(project.cover_image_url);
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:shadow-lg">
-      <Link href={`/projects/${project.slug}`} className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+    <div className="group relative flex flex-col overflow-hidden border border-border bg-surface transition-all duration-300 hover:shadow-none">
+      <Link href={`/projects/${project.slug}`} className="block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background">
         <div className="relative aspect-video w-full overflow-hidden">
           <Image
             src={imageSrc}

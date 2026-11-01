@@ -13,7 +13,7 @@ export default function ProjectNotFound() {
       </p>
       <Link
         href="/#works"
-        className="mt-2 inline-flex items-center justify-center px-6 py-3 text-sm font-medium border border-border text-foreground hover:border-accent hover:text-accent transition-colors"
+        className="mt-2 inline-flex items-center justify-center px-6 py-3 text-sm font-medium border border-border text-foreground hover:border-accent hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
       >
         Lihat Karya
       </Link>
