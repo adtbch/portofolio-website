@@ -3,21 +3,21 @@ import type { Social } from "@/types";
 export const siteConfig = {
   name: "Aditya Bachtiar",
   shortName: "Adit",
-  role: "Fullstack Developer | Laravel, Go & Embedded Systems",
+  role: "Pengembang Fullstack | Laravel, Go & Sistem Tertanam",
   description:
-    "Fullstack developer building scalable APIs with Laravel and Go, plus embedded/IoT systems on ESP32.",
+    "Pengembang fullstack yang membangun API skalabel dengan Laravel dan Go, serta sistem tertanam/IoT berbasis ESP32.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "id_ID",
   status: {
     available: true,
-    text: "Available for work",
+    text: "Tersedia untuk bekerja",
   },
   nav: [
-    { label: "Works", href: "#works" },
-    { label: "About", href: "#about" },
-    { label: "Skills", href: "#skills" },
-    { label: "Experience", href: "#experience" },
-    { label: "Contact", href: "#contact" },
+    { label: "Karya", href: "#works" },
+    { label: "Tentang", href: "#about" },
+    { label: "Keahlian", href: "#skills" },
+    { label: "Pengalaman", href: "#experience" },
+    { label: "Kontak", href: "#contact" },
   ],
 } as const;
 

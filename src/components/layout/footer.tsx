@@ -6,9 +6,9 @@ export function Footer() {
     <footer className="w-full border-t border-border bg-background py-8 mt-auto">
       <Container className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-xs font-mono text-muted-foreground text-center sm:text-left">
-          <span>© {siteConfig.name}. All rights reserved.</span>
+          <span>© {siteConfig.name}. Hak cipta dilindungi.</span>
           <span className="hidden sm:inline text-border">•</span>
-          <span>Built with Next.js & Tailwind CSS</span>
+          <span>Dibuat dengan Next.js & Tailwind CSS</span>
         </div>
 
         <div className="flex items-center gap-6">
@@ -20,7 +20,7 @@ export function Footer() {
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-mono text-muted-foreground hover:text-accent transition-colors"
+                className="text-xs font-mono text-muted-foreground hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
               >
                 {social.label || social.platform}
               </a>

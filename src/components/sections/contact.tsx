@@ -17,7 +17,7 @@ export default function Contact() {
             Mari Terhubung
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Terbuka untuk diskusi proyek, kolaborasi, atau sekadar menyapa. Hubungi saya melalui platform di bawah ini.
+            Tersedia untuk diskusi proyek, kolaborasi, atau sekadar menyapa. Hubungi saya melalui platform di bawah ini.
           </p>
         </div>
 
@@ -28,7 +28,7 @@ export default function Contact() {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium border border-border bg-card text-foreground hover:border-accent hover:text-accent transition-colors rounded-md"
+              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium border border-border bg-card text-foreground hover:border-accent hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
             >
               {link.label}
             </a>

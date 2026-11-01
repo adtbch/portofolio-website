@@ -17,7 +17,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
-  if (!project) return { title: "Project tidak ditemukan" };
+    return { title: "Proyek tidak ditemukan" };
 
   const image = buildCoverUrl(project.cover_image_url);
   return {
@@ -44,8 +44,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     <article className="py-12 sm:py-16 lg:py-20">
       <Container className="flex flex-col gap-10">
         <Link
-          href="/#works"
-          className="font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-accent"
+          href="#/works"
+          className="font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
         >
           &larr; Kembali
         </Link>
@@ -92,7 +92,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 href={project.live_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium border border-border bg-foreground text-background hover:opacity-90 transition-opacity"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium border border-border bg-foreground text-background hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
               >
                 Live Demo
               </a>
@@ -102,7 +102,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 href={project.repo_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium border border-border text-foreground hover:border-accent hover:text-accent transition-colors"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium border border-border text-foreground hover:bg-surface transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
               >
                 Repository
               </a>

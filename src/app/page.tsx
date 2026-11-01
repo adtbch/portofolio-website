@@ -1,18 +1,12 @@
-import Hero from "@/components/sections/hero";
-import About from "@/components/sections/about";
-import Skills from "@/components/sections/skills";
-import FeaturedWorks from "@/components/sections/featured-works";
-import Experience from "@/components/sections/experience";
-import Contact from "@/components/sections/contact";
-
 export default function Home() {
   return (
     <>
       <Hero />
       <About />
       <Skills />
-      <FeaturedWorks />
       <Experience />
+      <FeaturedWorks />
+      <Certificates />
       <Contact />
     </>
   );

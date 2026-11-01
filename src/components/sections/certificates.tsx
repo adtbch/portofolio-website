@@ -9,13 +9,9 @@ export default async function Certificates() {
   return (
     <section id="certificates" className="py-16 sm:py-24">
       <Container>
-        <SectionHeading
-          index="05"
-          title="Prestasi & Sertifikasi"
-          description="Sertifikat profesional dan pencapaian keahlian."
-        />
+        <SectionHeading index="05" title="Prestasi & Sertifikasi" description="Sertifikat profesional dan pencapaian keahlian." />
         {certs.length === 0 ? (
-          <div className="border border-border bg-card p-6 rounded-lg text-center">
+          <div className="border border-border bg-surface p-6 text-center">
             <p className="text-sm text-muted-foreground">
               {/* TODO: Tambahkan data sertifikat di Supabase (certificates table). */}
               Belum ada data prestasi/sertifikasi yang ditampilkan.
@@ -26,7 +22,7 @@ export default async function Certificates() {
             {certs.map((cert) => (
               <div
                 key={cert.id}
-                className="flex flex-col justify-between border border-border bg-card p-6 rounded-lg gap-4"
+                className="flex flex-col justify-between border border-border bg-surface p-6 gap-4"
               >
                 <div className="flex flex-col gap-2">
                   <h3 className="font-heading text-lg font-semibold text-foreground">

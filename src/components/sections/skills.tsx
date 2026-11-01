@@ -40,7 +40,7 @@ export default async function Skills() {
               return (
                 <div key={group} className="flex flex-col gap-4">
                   <h3 className="font-heading text-lg sm:text-xl font-semibold text-foreground capitalize">
-                    {group}
+                    {group === "languages" ? "Bahasa" : group === "frameworks" ? "Kerangka Kerja" : group === "databases" ? "Basis Data" : group === "tools" ? "Alat" : group === "others" ? "Lainnya" : group}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {items.map((skill) => (

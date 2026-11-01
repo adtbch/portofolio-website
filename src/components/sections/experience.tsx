@@ -8,20 +8,16 @@ export default async function Experience() {
   return (
     <section id="experience" className="py-16 sm:py-24">
       <Container>
-        <SectionHeading
-          index="04"
-          title="Experience"
-          description="TODO: Pengalaman kerja/proyek relevan."
-        />
+        <SectionHeading index="04" title="Pengalaman" />
         {experiences.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            Belum ada pengalaman yang ditampilkan. TODO: Tambahkan data experience di Supabase.
+            Belum ada pengalaman yang ditampilkan. TODO: Tambahkan data pengalaman di Supabase.
           </p>
         ) : (
           <ol className="relative border-l border-border ml-3 space-y-10">
             {experiences.map((exp) => (
               <li key={exp.id} className="ml-6">
-                <span className="absolute -left-2.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent ring-8 ring-background" />
+                <span className="absolute -left-2.5 flex h-5 w-5 items-center justify-center bg-accent ring-8 ring-background" />
                 <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
                   <div>
                     <h3 className="font-heading text-lg font-semibold text-foreground">
