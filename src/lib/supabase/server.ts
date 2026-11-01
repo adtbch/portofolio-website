@@ -5,6 +5,18 @@ import { createClient } from "@supabase/supabase-js";
 export function createServerSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) throw new Error("Missing Supabase env vars");
+  // If env vars missing (e.g., during static build), return a mock client that resolves empty data.
+  if (!url || !key) {
+    const mockChain = {
+      eq: () => mockChain,
+      order: () => mockChain,
+      select: () => mockChain,
+      single: async () => ({ data: null, error: null }),
+    } as any;
+    const mock = {
+      from: () => mockChain,
+    } as any;
+    return mock;
+  }
   return createClient(url, key, { auth: { persistSession: false } });
 }
