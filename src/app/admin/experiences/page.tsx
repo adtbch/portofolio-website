@@ -5,10 +5,11 @@ import Link from "next/link";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import ExperienceClientManager from "./client";
+import { isAdminAuthed } from "@/lib/admin/auth";
 
 async function ExperiencesContent() {
   const cookieStore = await cookies();
-  if (cookieStore.get("admin_session")?.value !== "authenticated") {
+  if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
     redirect("/admin/login");
   }
 
@@ -24,6 +25,10 @@ async function ExperiencesContent() {
 
   async function handleSave(formData: FormData) {
     "use server";
+    const cookieStore = await cookies();
+    if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+      redirect("/admin/login");
+    }
     const supabaseAdmin = createServerSupabase(true);
     const id = formData.get("id") as string;
     const company = formData.get("company") as string;
@@ -64,6 +69,10 @@ async function ExperiencesContent() {
 
   async function handleDelete(formData: FormData) {
     "use server";
+    const cookieStore = await cookies();
+    if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+      redirect("/admin/login");
+    }
     const supabaseAdmin = createServerSupabase(true);
     const id = formData.get("id") as string;
     if (id) {

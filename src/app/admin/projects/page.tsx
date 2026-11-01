@@ -5,10 +5,11 @@ import Link from "next/link";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import ProjectClientManager from "./client";
+import { isAdminAuthed } from "@/lib/admin/auth";
 
 async function ProjectsContent() {
   const cookieStore = await cookies();
-  if (cookieStore.get("admin_session")?.value !== "authenticated") {
+  if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
     redirect("/admin/login");
   }
 
@@ -24,6 +25,10 @@ async function ProjectsContent() {
 
   async function handleSave(formData: FormData) {
     "use server";
+    const cookieStore = await cookies();
+    if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+      redirect("/admin/login");
+    }
     const supabaseAdmin = createServerSupabase(true);
     const id = formData.get("id") as string;
     const title = formData.get("title") as string;
@@ -67,6 +72,10 @@ async function ProjectsContent() {
 
   async function handleDelete(formData: FormData) {
     "use server";
+    const cookieStore = await cookies();
+    if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+      redirect("/admin/login");
+    }
     const supabaseAdmin = createServerSupabase(true);
     const id = formData.get("id") as string;
     if (id) {

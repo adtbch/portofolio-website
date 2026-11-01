@@ -1,20 +1,29 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { signAdminSession } from "@/lib/admin/auth";
 
 export async function POST(request: Request) {
   try {
     const { password } = await request.json();
-    const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword) {
+      return NextResponse.json(
+        { success: false, error: "Server configuration error" },
+        { status: 500 }
+      );
+    }
 
     if (password === adminPassword) {
       const cookieStore = await cookies();
+      const signed = signAdminSession("authenticated");
       cookieStore.set({
         name: "admin_session",
-        value: "authenticated",
+        value: signed,
         httpOnly: true,
         path: "/",
         secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60 * 24 * 7, // 1 week
+        maxAge: 60 * 60 * 24 * 7,
         sameSite: "lax",
       });
 
