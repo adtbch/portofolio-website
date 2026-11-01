@@ -1,0 +1,246 @@
+{
+  "profile": {
+    "full_name": "Aditya Bachtiar",
+    "headline": "Lulusan Teknik Informatika | Backend Developer & Robotics Engineer",
+    "phone": "082134544728",
+    "email": "adit.bachtiar091@gmail.com",
+    "location": "Batang, Jawa Tengah",
+    "website": "https://www.linkedin.com/in/adityabachtiarr/",
+    "about": "Lulusan Teknik Informatika Universitas Islam Sultan Agung dengan pengalaman dalam pengembangan perangkat lunak, backend, embedded system, dan robotika. Memiliki pengalaman mengembangkan sistem elektronik dan pemrograman Automated Guided Vehicle (AGV), REST API menggunakan Golang, serta aplikasi berbasis web. Aktif dalam riset dan kompetisi robotika hingga tingkat nasional serta meraih Juara 2 kompetisi Web Development tingkat nasional. Terbiasa menggunakan C/C++, Python, Golang, PHP, SQL, ESP32, dan berbagai teknologi pengembangan perangkat lunak."
+  },
+  "skills": [
+    {"name": "C/C++", "group": "languages", "sort_order": 1, "published": true},
+    {"name": "Python", "group": "languages", "sort_order": 2, "published": true},
+    {"name": "Golang", "group": "languages", "sort_order": 3, "published": true},
+    {"name": "PHP", "group": "languages", "sort_order": 4, "published": true},
+    {"name": "SQL", "group": "databases", "sort_order": 1, "published": true},
+    {"name": "REST API", "group": "frameworks", "sort_order": 1, "published": true},
+    {"name": "HTML", "group": "frameworks", "sort_order": 2, "published": true},
+    {"name": "CSS", "group": "frameworks", "sort_order": 3, "published": true},
+    {"name": "ESP32", "group": "tools", "sort_order": 1, "published": true},
+    {"name": "Arduino", "group": "tools", "sort_order": 2, "published": true},
+    {"name": "Git/GitHub", "group": "tools", "sort_order": 3, "published": true},
+    {"name": "Figma", "group": "tools", "sort_order": 4, "published": true},
+    {"name": "Pemecahan Masalah", "group": "others", "sort_order": 1, "published": true},
+    {"name": "Berpikir Analitis", "group": "others", "sort_order": 2, "published": true},
+    {"name": "Kepemimpinan", "group": "others", "sort_order": 3, "published": true},
+    {"name": "Kerja Sama Tim", "group": "others", "sort_order": 4, "published": true}
+  ],
+  "experiences": [
+    {
+      "company": "PT Semarang Autocomp Manufacturing Indonesia",
+      "role": "Divisi Elektronik dan Program",
+      "type": "internship",
+      "location": "Semarang, Jawa Tengah",
+      "start_date": "2025-06-01",
+      "end_date": "2025-11-30",
+      "description": [
+        "Dipercaya menangani pemrograman dan elektronik dalam proyek pengembangan 1 unit Automated Guided Vehicle (AGV) dari tahap riset hingga pengujian.",
+        "Mengintegrasikan berbagai sensor, sistem penggerak, dan mikrokontroler dalam sistem kontrol AGV.",
+        "Melakukan pemrograman, pengujian, dan troubleshooting sistem selama ±6 bulan untuk mendukung implementasi AGV pada lingkungan industri."
+      ],
+      "tech_stack": ["C/C++", "Microcontroller", "Sensors", "AGV"],
+      "sort_order": 1,
+      "published": true
+    },
+    {
+      "company": "Masyarakat Industri Kreatif Teknologi Informasi dan Komunikasi Indonesia (MIKTI)",
+      "role": "Peserta MSIB – Backend Development",
+      "type": "internship",
+      "location": "DKI Jakarta, Indonesia",
+      "start_date": "2024-09-01",
+      "end_date": "2024-12-31",
+      "description": [
+        "Mengembangkan REST API menggunakan Golang untuk mendukung autentikasi, pengelolaan pengguna, tiket, dan transaksi aplikasi.",
+        "Mengimplementasikan autentikasi, pengelolaan pengguna, tiket, dan transaksi pada sisi backend.",
+        "Berkolaborasi dalam tim beranggotakan 4 orang selama pengembangan dan pengujian aplikasi."
+      ],
+      "tech_stack": ["Golang", "REST API", "Backend"],
+      "sort_order": 2,
+      "published": true
+    },
+    {
+      "company": "PT. Inovasi Cipta Teknologi",
+      "role": "UI/UX Designer & Backend Developer",
+      "type": "internship",
+      "location": "Semarang, Indonesia",
+      "start_date": "2025-03-01",
+      "end_date": "2025-05-31",
+      "description": [
+        "Mengembangkan sistem penerimaan siswa baru berbasis web untuk mendigitalisasi proses pendaftaran.",
+        "Merancang alur dan antarmuka untuk 3 jenis pengguna serta mengembangkan backend untuk pengelolaan data pendaftar.",
+        "Berkolaborasi dengan tim beranggotakan 3 orang dalam proses pengembangan, pengujian, dan implementasi sistem."
+      ],
+      "tech_stack": ["PHP", "SQL", "UI/UX", "Backend"],
+      "sort_order": 3,
+      "published": true
+    },
+    {
+      "company": "Unissula Robotic Team",
+      "role": "Wakil Ketua",
+      "type": "organization",
+      "location": "Semarang, Indonesia",
+      "start_date": "2025-07-01",
+      "end_date": "2026-07-01",
+      "description": [
+        "Mengoordinasikan kegiatan organisasi, program riset, dan pengembangan tim robotika bersama Ketua.",
+        "Mengelola koordinasi internal, administrasi, serta birokrasi organisasi dengan pihak fakultas dan pihak terkait.",
+        "Terpilih sebagai perwakilan KRAI 2026 pada bidang Elektronik dan Pemrograman serta berhasil lolos ke tingkat nasional."
+      ],
+      "tech_stack": [],
+      "sort_order": 4,
+      "published": true
+    },
+    {
+      "company": "Unissula Robotic Team",
+      "role": "Penanggung Jawab Riset Robot KRAI",
+      "type": "organization",
+      "location": "Semarang, Indonesia",
+      "start_date": "2024-07-01",
+      "end_date": "2025-07-01",
+      "description": [
+        "Memimpin dan mengoordinasikan kegiatan riset serta pengembangan robot KRAI.",
+        "Mengarahkan pengembangan sistem mulai dari pemrograman, integrasi elektronik, pengujian, hingga evaluasi.",
+        "Mengoordinasikan troubleshooting dan transfer pengetahuan teknis antaranggota tim."
+      ],
+      "tech_stack": ["C/C++", "Robotics"],
+      "sort_order": 5,
+      "published": true
+    },
+    {
+      "company": "Unissula Robotic Team",
+      "role": "Anggota",
+      "type": "organization",
+      "location": "Semarang, Indonesia",
+      "start_date": "2023-07-01",
+      "end_date": "2024-07-01",
+      "description": [
+        "Terlibat dalam riset, pemrograman, pengujian, troubleshooting, dan integrasi sistem robot.",
+        "Terpilih sebagai Programmer KRAI untuk mewakili UNISSULA pada KRI 2024.",
+        "Berkontribusi dalam pengembangan robot hingga tim menjadi Finalis Nasional KRI 2024."
+      ],
+      "tech_stack": ["C/C++", "Robotics"],
+      "sort_order": 6,
+      "published": true
+    },
+    {
+      "company": "Badan Eksekutif Mahasiswa Fakultas Teknologi Industri (BEM FTI UNISSULA)",
+      "role": "Ketua Divisi Kementerian Dalam Negeri",
+      "type": "organization",
+      "location": "Semarang, Indonesia",
+      "start_date": "2024-12-01",
+      "end_date": "2025-12-01",
+      "description": [
+        "Memimpin dan mengoordinasikan anggota divisi dalam perencanaan dan pelaksanaan program kerja internal BEM FTI UNISSULA.",
+        "Mengelola koordinasi lintas divisi serta evaluasi program untuk memastikan kegiatan organisasi terlaksana sesuai rencana.",
+        "Berkontribusi sebagai Sie Acara LKMM dalam penyusunan rangkaian kegiatan dan koordinasi teknis pelaksanaan.",
+        "Menjadi pemateri dalam beberapa kegiatan BEM FTI sebagai bagian dari program pengembangan dan kaderisasi mahasiswa."
+      ],
+      "tech_stack": [],
+      "sort_order": 7,
+      "published": true
+    },
+    {
+      "company": "Badan Eksekutif Mahasiswa Fakultas Teknologi Industri (BEM FTI UNISSULA)",
+      "role": "Anggota Divisi Sumber Daya Mahasiswa (SDM)",
+      "type": "organization",
+      "location": "Semarang, Indonesia",
+      "start_date": "2023-01-01",
+      "end_date": "2024-12-31",
+      "description": [
+        "Mengelola pelaksanaan program kerja Divisi SDM yang berfokus pada pengembangan kapasitas dan keterlibatan mahasiswa.",
+        "Memimpin tim kepanitiaan Kajian BEM FTI UNISSULA mulai dari tahap perencanaan, koordinasi antar-divisi, hingga pelaksanaan kegiatan.",
+        "Mengkoordinasikan cabang olahraga voli pada FTI Sport Season dan memastikan kebutuhan teknis serta operasional kegiatan berjalan sesuai rencana.",
+        "Mengelola kebutuhan perlengkapan Seminar Entrepreneur serta berkoordinasi dengan panitia untuk mendukung kesiapan dan kelancaran acara."
+      ],
+      "tech_stack": [],
+      "sort_order": 8,
+      "published": true
+    }
+  ],
+  "projects": [
+    {
+      "slug": "kontes-robot-indonesia-krai-2026",
+      "title": "Kontes Robot Indonesia (KRI) 2026 – Divisi KRAI",
+      "subtitle": "Lolos Tingkat Nasional KRI 2026",
+      "category": "iot",
+      "description": "Riset dan pengembangan robot KRAI untuk Kontes Robot Indonesia 2026. Berhasil lolos ke tingkat nasional pada bidang Elektronik dan Pemrograman.",
+      "tech_stack": ["C/C++", "ESP32", "Arduino"],
+      "featured": true,
+      "published": true,
+      "sort_order": 1,
+      "live_url": null,
+      "repo_url": null
+    },
+    {
+      "slug": "tic-8-national-website-development",
+      "title": "Juara 2 TIC 8.0 National Website Development Competition",
+      "subtitle": "Universitas Jember",
+      "category": "web",
+      "description": "Mengembangkan REST API, autentikasi JWT dan Google Authentication, integrasi Midtrans dan Cloudinary, serta fitur sertifikat digital berbasis kriptografi.",
+      "tech_stack": ["Golang", "REST API", "JWT", "Midtrans", "Cloudinary"],
+      "featured": true,
+      "published": true,
+      "sort_order": 2,
+      "live_url": null,
+      "repo_url": null
+    },
+    {
+      "slug": "kontes-robot-indonesia-krai-2024",
+      "title": "Kontes Robot Indonesia (KRI) 2024 – Divisi KRAI",
+      "subtitle": "Finalis Nasional KRI 2024",
+      "category": "iot",
+      "description": "Terlibat dalam riset, pemrograman, pengujian, troubleshooting, dan integrasi sistem robot sebagai Programmer KRAI, meraih Finalis Nasional KRI 2024.",
+      "tech_stack": ["C/C++", "Embedded System"],
+      "featured": true,
+      "published": true,
+      "sort_order": 3,
+      "live_url": null,
+      "repo_url": null
+    },
+    {
+      "slug": "automated-guided-vehicle-agv",
+      "title": "Automated Guided Vehicle (AGV) Development",
+      "subtitle": "Proyek Magang PT Semarang Autocomp Manufacturing Indonesia",
+      "category": "iot",
+      "description": "Pemrograman dan elektronik dalam proyek pengembangan 1 unit Automated Guided Vehicle (AGV) dari tahap riset hingga pengujian.",
+      "tech_stack": ["C/C++", "Microcontroller", "Sensors"],
+      "featured": false,
+      "published": true,
+      "sort_order": 4,
+      "live_url": null,
+      "repo_url": null
+    }
+  ],
+  "certificates": [
+    {
+      "title": "Juara 2 Technology Innovative Challenge (TIC) 8.0 National Website Development Competition",
+      "issuer": "Universitas Jember",
+      "issued_at": "2025-01-01",
+      "credential_url": null,
+      "sort_order": 1,
+      "published": true
+    },
+    {
+      "title": "Finalis Nasional Kontes Robot Indonesia (KRI) 2024 – Divisi KRAI",
+      "issuer": "Pusat Prestasi Nasional / KRI",
+      "issued_at": "2024-01-01",
+      "credential_url": null,
+      "sort_order": 2,
+      "published": true
+    },
+    {
+      "title": "Lolos Tingkat Nasional Kontes Robot Indonesia (KRI) 2026 – Divisi KRAI",
+      "issuer": "Pusat Prestasi Nasional / KRI",
+      "issued_at": "2026-01-01",
+      "credential_url": null,
+      "sort_order": 3,
+      "published": true
+    }
+  ],
+  "confirmation_notes": [
+    "[PERLU_KONFIRMASI] Tanggal exact (bulan/hari) untuk sertifikat/kompetisi default 1 Januari karena CV hanya mencantumkan tahun.",
+    "[PERLU_KONFIRMASI] Tipe pengalaman PT. Inovasi Cipta Teknologi diasumsikan internship, konfirmasi jika freelance.",
+    "[PERLU_KONFIRMASI] URL tautan (live_url, repo_url, credential_url) belum tercantum di CV, saat ini diset null."
+  ]
+}

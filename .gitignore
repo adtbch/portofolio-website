@@ -41,7 +41,8 @@ yarn-error.log*
 next-env.d.ts
 
 # agent configuration
-AGENTS.md
+.env.local
 
-docs/*
+# docs/*
 TODO_DEPLOY.md
+TODO_ADMIN.md
