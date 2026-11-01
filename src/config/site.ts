@@ -23,7 +23,7 @@ export const siteConfig = {
 
 export const socials: Social[] = [
   { id: "1", platform: "github", label: "GitHub", url: "https://github.com/adtbch", sort_order: 1, published: true },
-  { id: "2", platform: "linkedin", label: "LinkedIn", url: "", sort_order: 2, published: true }, // TODO: isi URL LinkedIn Adit
-  { id: "3", platform: "instagram", label: "Instagram", url: "", sort_order: 3, published: true }, // TODO: isi URL Instagram Adit
-  { id: "4", platform: "email", label: "Email", url: "", sort_order: 4, published: true }, // TODO: isi URL Email Adit
+  { id: "2", platform: "linkedin", label: "LinkedIn", url: "https://www.linkedin.com/in/adityabachtiarr", sort_order: 2, published: true },
+  { id: "3", platform: "instagram", label: "Instagram", url: "https://www.instagram.com/adtb___/", sort_order: 3, published: true },
+  { id: "4", platform: "email", label: "Email", url: "mailto:adit.bachtiar091@gmail.com", sort_order: 4, published: true },
 ];
