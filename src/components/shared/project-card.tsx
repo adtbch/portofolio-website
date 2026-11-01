@@ -1,22 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { TechBadge } from "@/components/shared/tech-badge";
+import { buildCoverUrl } from "@/lib/cloudinary/url";
 import type { Project } from "@/types";
 
 interface ProjectCardProps {
   project: Project;
-}
-
-function buildCoverUrl(imageUrl: string | null | undefined): string {
-  const fallback = "/images/fallback-project-cover.jpg";
-  if (!imageUrl) return fallback;
-  if (imageUrl.startsWith("/images/")) return imageUrl;
-  if (imageUrl.startsWith("http") || imageUrl.startsWith("//")) return imageUrl;
-  const cloud = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  if (cloud) {
-    return `https://res.cloudinary.com/${cloud}/image/upload/${imageUrl}`;
-  }
-  return fallback;
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
