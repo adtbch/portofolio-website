@@ -19,7 +19,7 @@ async function AdminHeader() {
         <AdminNav />
       </div>
       <div className="flex items-center space-x-4">
-        <Link href="/" target="_blank" className="text-xs font-mono text-[#a1a1aa] hover:text-[#22d3ee]">
+        <Link href="/" target="_blank" rel="noopener noreferrer" className="text-xs font-mono text-[#a1a1aa] hover:text-[#22d3ee] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#22d3ee] focus-visible:rounded-sm">
           View Site ↗
         </Link>
         <LogoutButton />

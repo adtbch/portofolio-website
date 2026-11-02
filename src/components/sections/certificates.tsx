@@ -13,7 +13,6 @@ export default async function Certificates() {
         {certs.length === 0 ? (
           <div className="border border-border bg-surface p-6 text-center">
             <p className="text-sm text-muted-foreground">
-              {/* TODO: Tambahkan data sertifikat di Supabase (certificates table). */}
               Belum ada data prestasi/sertifikasi yang ditampilkan.
             </p>
           </div>

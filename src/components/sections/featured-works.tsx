@@ -13,7 +13,6 @@ export default async function FeaturedWorks() {
         {projects.length === 0 ? (
           <div className="border border-border bg-surface p-6 text-center">
             <p className="text-sm text-muted-foreground">
-              {/* TODO: Tambahkan project ke database (projects table, featured=true) agar tampil di sini. */}
               Belum ada project unggulan tersedia.
             </p>
           </div>

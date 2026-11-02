@@ -26,13 +26,13 @@ export default function Hero() {
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
             href="#works"
-            className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium border border-border bg-foreground text-background hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+            className="inline-flex items-center justify-center min-h-[48px] px-6 py-3 text-sm font-medium border border-border bg-foreground text-background hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
           >
             Lihat Karya
           </Link>
           <Link
             href="#contact"
-            className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium border border-border text-foreground hover:bg-surface transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+            className="inline-flex items-center justify-center min-h-[48px] px-6 py-3 text-sm font-medium border border-border text-foreground hover:bg-surface transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
           >
             Hubungi
           </Link>

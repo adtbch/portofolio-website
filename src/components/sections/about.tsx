@@ -12,13 +12,11 @@ export default function About() {
               Backend + Embedded
             </h3>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              {/* TODO: Tambahkan deskripsi about dari data/site settings bila tersedia. */}
               Saya membangun API yang skalabel dengan Laravel dan Go, serta sistem embedded/IoT berbasis ESP32. Fokus pada efisiensi, kejelasan arsitektur, dan integrasi yang praktis.
             </p>
           </div>
           <div className="flex flex-col gap-4">
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              {/* TODO: Tambahkan deskripsi tambahan / konteks lokasi bila tersedia. */}
               Berbasis di Indonesia, terbuka untuk kolaborasi proyek web, backend, dan IoT.
             </p>
           </div>

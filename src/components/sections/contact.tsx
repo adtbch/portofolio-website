@@ -21,14 +21,14 @@ export default function Contact() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
           {links.map((link) => (
             <a
               key={link.label}
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium border border-border bg-card text-foreground hover:border-accent hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+              className="inline-flex items-center justify-center min-h-[48px] px-6 py-3 text-sm font-medium border border-border bg-card text-foreground hover:border-accent hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
             >
               {link.label}
             </a>

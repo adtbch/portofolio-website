@@ -9,7 +9,7 @@ export function Header() {
         <div className="flex items-center gap-6">
           <Link
             href="/"
-            className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+            className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:rounded-sm"
           >
             <span className="font-heading font-bold text-lg tracking-tight text-foreground group-hover:text-accent transition-colors">
               {siteConfig.shortName}
@@ -31,21 +31,21 @@ export function Header() {
         </div>
 
         <nav aria-label="Navigasi utama" className="hidden md:flex items-center gap-6">
-          {siteConfig.nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+                {siteConfig.nav.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:rounded-sm"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
 
         <div className="flex items-center gap-4">
           <Link
             href="#contact"
-            className="md:hidden inline-flex items-center justify-center px-3 py-1 text-xs font-mono font-medium text-foreground hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+            className="md:hidden inline-flex items-center justify-center min-h-[48px] px-3 py-1 text-xs font-mono font-medium text-foreground hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
           >
             Kontak
           </Link>

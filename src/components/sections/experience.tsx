@@ -10,9 +10,11 @@ export default async function Experience() {
       <Container>
         <SectionHeading index="04" title="Pengalaman" />
         {experiences.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            Belum ada pengalaman yang ditampilkan. TODO: Tambahkan data pengalaman di Supabase.
-          </p>
+          <div className="border border-border bg-surface p-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              Belum ada pengalaman yang ditampilkan.
+            </p>
+          </div>
         ) : (
           <ol className="relative border-l border-border ml-3 space-y-10">
             {experiences.map((exp) => (
