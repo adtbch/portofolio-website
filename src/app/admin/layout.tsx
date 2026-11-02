@@ -2,11 +2,12 @@ import { Suspense } from "react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { AdminNav, LogoutButton } from "./components";
+import { isAdminAuthed } from "@/lib/admin/auth";
 
 async function AdminHeader() {
   const cookieStore = await cookies();
   const session = cookieStore.get("admin_session");
-  const isAuthenticated = session?.value === "authenticated";
+  const isAuthenticated = isAdminAuthed(session?.value);
 
   if (!isAuthenticated) return null;
 

@@ -14,7 +14,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (password === adminPassword) {
+    if (password.trim() === adminPassword.trim()) {
       const cookieStore = await cookies();
       const signed = signAdminSession("authenticated");
       cookieStore.set({

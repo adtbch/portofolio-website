@@ -3,9 +3,9 @@ import type { Social } from "@/types";
 export const siteConfig = {
   name: "Aditya Bachtiar",
   shortName: "Adit",
-  role: "Pengembang Fullstack | Laravel, Go & Sistem Tertanam",
+  role: "Lulusan Teknik Informatika | Backend Developer & Robotics Engineer",
   description:
-    "Pengembang fullstack yang membangun API skalabel dengan Laravel dan Go, serta sistem tertanam/IoT berbasis ESP32.",
+    "Lulusan Teknik Informatika Universitas Islam Sultan Agung dengan pengalaman dalam pengembangan perangkat lunak, backend, embedded system, dan robotika. Memiliki pengalaman mengembangkan sistem elektronik dan pemrograman Automated Guided Vehicle (AGV), REST API menggunakan Golang, serta aplikasi berbasis web. Aktif dalam riset dan kompetisi robotika hingga tingkat nasional serta meraih Juara 2 kompetisi Web Development tingkat nasional. Terbiasa menggunakan C/C++, Python, Golang, PHP, SQL, ESP32, dan berbagai teknologi pengembangan perangkat lunak.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "id_ID",
   status: {

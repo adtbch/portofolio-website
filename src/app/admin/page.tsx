@@ -3,11 +3,12 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { isAdminAuthed } from "@/lib/admin/auth";
 
 async function DashboardContent() {
   const cookieStore = await cookies();
   const session = cookieStore.get("admin_session");
-  if (session?.value !== "authenticated") {
+  if (!isAdminAuthed(session?.value)) {
     redirect("/admin/login");
   }
 

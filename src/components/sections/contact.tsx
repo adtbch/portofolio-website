@@ -3,9 +3,9 @@ import { Container } from "@/components/layout/container";
 export default function Contact() {
   const links = [
     { label: "GitHub", href: "https://github.com/adtbch" },
-    { label: "LinkedIn", href: "https://linkedin.com" },
-    { label: "Instagram", href: "https://instagram.com" },
-    { label: "Email", href: "mailto:aditya@example.com" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/adityabachtiarr" },
+    { label: "Instagram", href: "https://www.instagram.com/adtb___/" },
+    { label: "Email", href: "mailto:adit.bachtiar091@gmail.com" },
   ];
 
   return (

@@ -9,15 +9,15 @@ export default function About() {
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="flex flex-col gap-4">
             <h3 className="font-heading text-xl sm:text-2xl font-semibold text-foreground">
-              Backend + Embedded
+              Backend Developer & Robotics Engineer
             </h3>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              Saya membangun API yang skalabel dengan Laravel dan Go, serta sistem embedded/IoT berbasis ESP32. Fokus pada efisiensi, kejelasan arsitektur, dan integrasi yang praktis.
+              Lulusan Teknik Informatika Universitas Islam Sultan Agung dengan pengalaman dalam pengembangan perangkat lunak, backend, embedded system, dan robotika. Aktif dalam riset dan kompetisi robotika hingga tingkat nasional serta meraih Juara 2 kompetisi Web Development tingkat nasional.
             </p>
           </div>
           <div className="flex flex-col gap-4">
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              Berbasis di Indonesia, terbuka untuk kolaborasi proyek web, backend, dan IoT.
+              Terbiasa menggunakan C/C++, Python, Golang, PHP, SQL, ESP32, dan berbagai teknologi pengembangan perangkat lunak. Memiliki pengalaman mengembangkan sistem elektronik dan pemrograman Automated Guided Vehicle (AGV), REST API menggunakan Golang, serta aplikasi berbasis web. Berbasis di Batang, Jawa Tengah, terbuka untuk kolaborasi proyek web, backend, dan IoT.
             </p>
           </div>
         </div>
