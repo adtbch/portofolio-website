@@ -15,15 +15,37 @@ async function DashboardContent() {
   const supabase = createServerSupabase(true);
 
   // Fetch counts or basic stats
-  const [projRes, expRes, skillRes] = await Promise.all([
+  const [
+    projRes,
+    expRes,
+    skillRes,
+    certRes,
+    eduRes,
+    heroRes,
+    aboutRes,
+    socialRes,
+    msgRes,
+  ] = await Promise.all([
     supabase.from("projects").select("id", { count: "exact", head: true }),
     supabase.from("experiences").select("id", { count: "exact", head: true }),
     supabase.from("skills").select("id", { count: "exact", head: true }),
+    supabase.from("certificates").select("id", { count: "exact", head: true }),
+    supabase.from("education").select("id", { count: "exact", head: true }),
+    supabase.from("hero_settings").select("id", { count: "exact", head: true }),
+    supabase.from("about_settings").select("id", { count: "exact", head: true }),
+    supabase.from("socials").select("id", { count: "exact", head: true }),
+    supabase.from("contact_messages").select("id", { count: "exact", head: true }),
   ]);
 
   const projectCount = projRes.count ?? 0;
   const experienceCount = expRes.count ?? 0;
   const skillCount = skillRes.count ?? 0;
+  const certificateCount = certRes.count ?? 0;
+  const educationCount = eduRes.count ?? 0;
+  const heroCount = heroRes.count ?? 0;
+  const aboutCount = aboutRes.count ?? 0;
+  const socialCount = socialRes.count ?? 0;
+  const messageCount = msgRes.count ?? 0;
 
   const cards = [
     {
@@ -43,6 +65,48 @@ async function DashboardContent() {
       count: skillCount,
       desc: "Manage tech stack items, grouping (languages, frameworks, etc.), and icons.",
       href: "/admin/skills",
+    },
+    {
+      title: "Certificates",
+      count: certificateCount,
+      desc: "Manage certifications, issuers, credentials, and images.",
+      href: "/admin/certificates",
+    },
+    {
+      title: "Education",
+      count: educationCount,
+      desc: "Manage academic history, degrees, institutions, and GPAs.",
+      href: "/admin/education",
+    },
+    {
+      title: "Hero Settings",
+      count: heroCount,
+      desc: "Manage hero section: name, role, description, CTAs, and image.",
+      href: "/admin/hero-settings",
+    },
+    {
+      title: "About Settings",
+      count: aboutCount,
+      desc: "Manage about section: heading, title, body paragraphs, and CTA.",
+      href: "/admin/about-settings",
+    },
+    {
+      title: "Social Links",
+      count: socialCount,
+      desc: "Manage social media links displayed in contact section.",
+      href: "/admin/socials",
+    },
+    {
+      title: "Site Settings",
+      count: 0,
+      desc: "Manage global site key-value settings.",
+      href: "/admin/site-settings",
+    },
+    {
+      title: "Contact Messages",
+      count: messageCount,
+      desc: "View and manage incoming contact form submissions.",
+      href: "/admin/contact-messages",
     },
   ];
 

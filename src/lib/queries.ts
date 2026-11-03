@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type {
   Project,
@@ -6,6 +7,7 @@ import type {
   Skill,
   Certificate,
   Social,
+  HeroSettings,
 } from "@/types";
 
 export async function getProjects(): Promise<Project[]> {
@@ -75,7 +77,12 @@ export async function getExperiences(): Promise<Experience[]> {
     const supabase = createServerSupabase();
     const { data, error } = await supabase
       .from("experiences")
-      .select("*")
+      .select(`
+        *,
+        projects:projects!experience_id (
+          id, slug, title, subtitle, category, description, cover_image_url, gallery, images, tech_stack
+        )
+      `)
       .eq("published", true)
       .order("sort_order", { ascending: true });
 
@@ -194,5 +201,28 @@ export async function getSiteSettings(): Promise<Record<string, string>> {
   } catch (err) {
     console.error("Unexpected error fetching site settings:", err);
     return {};
+  }
+}
+
+export async function getHeroSettings(): Promise<HeroSettings | null> {
+  noStore();
+  try {
+    const supabase = createServerSupabase(true); // Use service role to bypass RLS for published content
+    const { data, error } = await supabase
+      .from("hero_settings")
+      .select("*")
+      .eq("published", true)
+      .order("sort_order", { ascending: true })
+      .limit(1)
+      .single();
+
+    if (error) {
+      console.error("Error fetching hero settings:", error);
+      return null;
+    }
+    return (data as HeroSettings) || null;
+  } catch (err) {
+    console.error("Unexpected error fetching hero settings:", err);
+    return null;
   }
 }

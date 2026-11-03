@@ -6,6 +6,14 @@ import { createServerSupabase } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import CertificateClientManager from "./client";
 import { isAdminAuthed } from "@/lib/admin/auth";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 async function CertificatesContent() {
   const cookieStore = await cookies();
@@ -39,17 +47,29 @@ async function CertificatesContent() {
     const published = formData.get("published") === "on";
     const sort_order = parseInt((formData.get("sort_order") as string) || "0", 10);
 
+    const certificate_public_id = String(formData.get("image_public_id") || "").trim();
+
     const payload = {
       title,
       issuer,
-      issued_at,
-      credential_url,
-      image_url,
-      published,
+      issued_at: issued_at || null,
+      credential_url: credential_url || null,
+      image_url: image_url || null,
+      image_public_id: certificate_public_id || null,
       sort_order,
+      published,
     };
 
     if (id) {
+      const { data: existing } = await supabaseAdmin
+        .from("certificates")
+        .select("image_public_id")
+        .eq("id", id)
+        .single();
+      const oldPublicId = existing?.image_public_id;
+      if (oldPublicId && oldPublicId !== payload.image_public_id) {
+        try { await cloudinary.uploader.destroy(oldPublicId); } catch (err) { console.error("Failed to delete old certificate image:", err); }
+      }
       await supabaseAdmin.from("certificates").update(payload).eq("id", id);
     } else {
       await supabaseAdmin.from("certificates").insert([payload]);

@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     if (password.trim() === adminPassword.trim()) {
       const cookieStore = await cookies();
-      const signed = signAdminSession("authenticated");
+      const signed = await signAdminSession("authenticated");
       cookieStore.set({
         name: "admin_session",
         value: signed,

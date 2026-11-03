@@ -1,37 +1,42 @@
-const crypto = require("crypto");
-
-function getSecret() {
+function getSecret(): string {
   const secret = process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD;
-  if (!secret) {
-    throw new Error("ADMIN_SESSION_SECRET or ADMIN_PASSWORD required");
-  }
-  return secret;
+  if (!secret) throw new Error("ADMIN_SESSION_SECRET or ADMIN_PASSWORD required");
+  return secret.trim();
 }
 
-export function signAdminSession(value: string): string {
-  const secret = getSecret();
-  const sig = crypto.createHmac("sha256", secret).update(value).digest("hex");
-  return `${value}.${sig}`;
+async function hmac(value: string): Promise<string> {
+  const key = await globalThis.crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(getSecret()),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const signature = await globalThis.crypto.subtle.sign("HMAC", key, new TextEncoder().encode(value));
+  return Array.from(new Uint8Array(signature), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-export function unsignAdminSession(signed: string | undefined): string | null {
+export async function signAdminSession(value: string): Promise<string> {
+  return `${value}.${await hmac(value)}`;
+}
+
+export async function unsignAdminSession(signed: string | undefined): Promise<string | null> {
   if (!signed) return null;
   const parts = signed.split(".");
   if (parts.length < 2) return null;
   const sig = parts.pop()!;
   const value = parts.join(".");
   try {
-    const secret = getSecret();
-    const expected = crypto.createHmac("sha256", secret).update(value).digest("hex");
-    if (crypto.timingSafeEqual(Buffer.from(sig, "hex"), Buffer.from(expected, "hex"))) {
-      return value;
-    }
+    const expected = await hmac(value);
+    if (sig.length !== expected.length) return null;
+    let mismatch = 0;
+    for (let i = 0; i < expected.length; i++) mismatch |= sig.charCodeAt(i) ^ expected.charCodeAt(i);
+    return mismatch === 0 ? value : null;
   } catch {
     return null;
   }
-  return null;
 }
 
-export function isAdminAuthed(signed: string | undefined): boolean {
-  return unsignAdminSession(signed) === "authenticated";
+export async function isAdminAuthed(signed: string | undefined): Promise<boolean> {
+  return (await unsignAdminSession(signed)) === "authenticated";
 }

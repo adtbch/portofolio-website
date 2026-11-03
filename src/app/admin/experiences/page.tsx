@@ -6,6 +6,15 @@ import { createServerSupabase } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import ExperienceClientManager from "./client";
 import { isAdminAuthed } from "@/lib/admin/auth";
+import type { Project } from "@/types";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 async function ExperiencesContent() {
   const cookieStore = await cookies();
@@ -16,12 +25,20 @@ async function ExperiencesContent() {
   const supabase = createServerSupabase(true);
   const { data: experiences, error } = await supabase
     .from("experiences")
-    .select("*")
+    .select("*, projects:projects(id, title, slug)")
     .order("sort_order", { ascending: true });
 
   if (error) {
     console.error("Error fetching experiences:", error);
   }
+
+  // Fetch all projects for linking
+  const { data: projects } = await supabase
+    .from("projects")
+    .select("id, title, slug")
+    .order("sort_order", { ascending: true });
+
+  type ProjectMinimal = Pick<Project, "id" | "title" | "slug">;
 
   async function handleSave(formData: FormData) {
     "use server";
@@ -33,6 +50,8 @@ async function ExperiencesContent() {
     const id = formData.get("id") as string;
     const company = formData.get("company") as string;
     const role = formData.get("role") as string;
+    const logo_url = formData.get("logo_url") as string;
+    const logo_public_id = String(formData.get("logo_public_id") || "").trim();
     const type = formData.get("type") as string;
     const location = formData.get("location") as string;
     const start_date = formData.get("start_date") as string;
@@ -43,10 +62,13 @@ async function ExperiencesContent() {
     const tech_stack = tech_stack_raw ? tech_stack_raw.split(",").map((s) => s.trim()).filter(Boolean) : [];
     const published = formData.get("published") === "on";
     const sort_order = parseInt(formData.get("sort_order") as string || "0", 10);
+    const project_ids = formData.getAll("project_ids") as string[];
 
     const payload = {
       company,
       role,
+      logo_url: logo_url || null,
+      logo_public_id: logo_public_id || null,
       type: type || null,
       location: location || null,
       start_date,
@@ -58,9 +80,39 @@ async function ExperiencesContent() {
     };
 
     if (id) {
+      const { data: existing } = await supabaseAdmin
+        .from("experiences")
+        .select("logo_public_id")
+        .eq("id", id)
+        .single();
+      const oldPublicId = existing?.logo_public_id;
+      if (oldPublicId && oldPublicId !== payload.logo_public_id) {
+        try { await cloudinary.uploader.destroy(oldPublicId); } catch (err) { console.error("Failed to delete old experience logo:", err); }
+      }
       await supabaseAdmin.from("experiences").update(payload).eq("id", id);
+      // Update project links
+      await supabaseAdmin
+        .from("projects")
+        .update({ experience_id: null })
+        .eq("experience_id", id);
+      if (project_ids.length > 0) {
+        await supabaseAdmin
+          .from("projects")
+          .update({ experience_id: id })
+          .in("id", project_ids);
+      }
     } else {
-      await supabaseAdmin.from("experiences").insert([payload]);
+      const { data: newExp } = await supabaseAdmin
+        .from("experiences")
+        .insert([payload])
+        .select("id")
+        .single();
+      if (newExp?.id && project_ids.length > 0) {
+        await supabaseAdmin
+          .from("projects")
+          .update({ experience_id: newExp.id })
+          .in("id", project_ids);
+      }
     }
 
     revalidatePath("/admin/experiences");
@@ -96,6 +148,7 @@ async function ExperiencesContent() {
 
       <ExperienceClientManager
         experiences={experiences || []}
+        projects={projects as ProjectMinimal[]}
         onSaveAction={handleSave}
         onDeleteAction={handleDelete}
       />

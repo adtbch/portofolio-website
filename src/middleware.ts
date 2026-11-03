@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { isAdminAuthed } from "@/lib/admin/auth";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!pathname.startsWith("/admin")) {
@@ -14,10 +14,10 @@ export function middleware(request: NextRequest) {
   }
 
   const cookie = request.cookies.get("admin_session")?.value;
-  if (!isAdminAuthed(cookie)) {
+  if (!(await isAdminAuthed(cookie))) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
-    return NextResponse.redirect(url);
+    return await NextResponse.redirect(url);
   }
 
   return NextResponse.next();

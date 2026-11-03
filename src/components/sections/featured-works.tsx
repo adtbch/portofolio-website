@@ -9,7 +9,7 @@ export default async function FeaturedWorks() {
   return (
     <section id="works" className="py-12 sm:py-16 lg:py-20">
       <Container className="flex flex-col gap-8">
-        <SectionHeading index="03" title="Karya Unggulan" />
+        <SectionHeading index="04" title="Karya Unggulan" />
         {projects.length === 0 ? (
           <div className="border border-border bg-surface p-6 text-center">
             <p className="text-sm text-muted-foreground">

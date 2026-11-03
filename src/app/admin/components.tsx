@@ -11,6 +11,12 @@ export function AdminNav() {
     { href: "/admin/experiences", label: "Experiences" },
     { href: "/admin/skills", label: "Skills" },
     { href: "/admin/certificates", label: "Certificates" },
+    { href: "/admin/hero-settings", label: "Hero" },
+    { href: "/admin/about-settings", label: "About" },
+    { href: "/admin/education", label: "Education" },
+    { href: "/admin/socials", label: "Socials" },
+    { href: "/admin/site-settings", label: "Site Settings" },
+    { href: "/admin/contact-messages", label: "Messages" },
   ];
 
   return (

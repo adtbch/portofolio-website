@@ -48,3 +48,8 @@ TODO_DEPLOY.md
 TODO_ADMIN.md
 
 AGENTS.md
+
+# Ignore markdown files except README.md and AGENTS.md
+*.md
+!README.md
+!AGENTS.md

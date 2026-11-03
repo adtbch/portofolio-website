@@ -10,16 +10,43 @@ interface Props {
 }
 
 export default function CertificateClientManager({ certificates, onSaveAction, onDeleteAction }: Props) {
+  const [uploading, setUploading] = useState(false);
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>, setUrl: (url: string) => void, folderName: string = "certificates") {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      data.append("folder", folderName);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: data });
+      const json = await res.json();
+      if (json.url) {
+        setUrl(json.url);
+      } else {
+        alert(json.error || "Upload failed");
+      }
+    } catch (err) {
+      alert("Upload error");
+    } finally {
+      setUploading(false);
+    }
+  }
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCert, setEditingCert] = useState<Certificate | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
 
   function openAddModal() {
     setEditingCert(null);
+    setImageUrl("");
     setIsModalOpen(true);
   }
 
   function openEditModal(cert: Certificate) {
     setEditingCert(cert);
+    setImageUrl(cert.image_url || "");
     setIsModalOpen(true);
   }
 
@@ -143,11 +170,30 @@ export default function CertificateClientManager({ certificates, onSaveAction, o
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-xs font-mono text-[#a1a1aa] mb-2">IMAGE URL</label>
-                  <input
-                    name="image_url"
-                    defaultValue={editingCert?.image_url || ""}
-                    className="w-full bg-[#0f0f0f] border border-[#2a2a2a] px-3 py-2 text-sm focus:outline-none focus:border-[#22d3ee]"
-                  />
+                  <div className="flex items-center gap-3">
+                    <input
+                      name="image_url"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder="https://... or upload image"
+                      className="w-full bg-[#0f0f0f] border border-[#2a2a2a] px-3 py-2 text-sm focus:outline-none focus:border-[#22d3ee]"
+                    />
+                    <label className={`cursor-pointer bg-[#2a2a2a] hover:bg-[#333] text-[#f5f5f7] px-3 py-2 font-mono text-xs whitespace-nowrap border border-[#333] ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                      {uploading ? 'Uploading...' : 'Upload Image'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleFileUpload(e, setImageUrl, "certificates")}
+                      />
+                    </label>
+                  </div>
+                  {imageUrl && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <img src={imageUrl} alt="Preview" className="w-12 h-12 object-cover border border-[#2a2a2a]" />
+                      <span className="text-xs text-[#a1a1aa] truncate">{imageUrl}</span>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-mono text-[#a1a1aa] mb-2">SORT ORDER</label>

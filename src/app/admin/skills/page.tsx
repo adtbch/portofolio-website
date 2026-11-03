@@ -6,6 +6,14 @@ import { createServerSupabase } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import SkillClientManager from "./client";
 import { isAdminAuthed } from "@/lib/admin/auth";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 async function SkillsContent() {
   const cookieStore = await cookies();
@@ -30,22 +38,39 @@ async function SkillsContent() {
       redirect("/admin/login");
     }
     const supabaseAdmin = createServerSupabase(true);
-    const id = formData.get("id") as string;
-    const name = formData.get("name") as string;
-    const group = formData.get("group") as string;
-    const icon_url = formData.get("icon_url") as string;
+    const id = String(formData.get("id") || "");
+    const name = String(formData.get("name") || "").trim();
+    const allowedGroups = ["languages", "frameworks", "databases", "tools", "embedded"] as const;
+    const requestedGroup = String(formData.get("group") || "languages");
+    const group = allowedGroups.includes(requestedGroup as (typeof allowedGroups)[number]) ? requestedGroup : "languages";
+    const icon_url = String(formData.get("icon_url") || "").trim();
     const published = formData.get("published") === "on";
-    const sort_order = parseInt(formData.get("sort_order") as string || "0", 10);
+    const parsedSort = Number.parseInt(String(formData.get("sort_order") || "0"), 10);
+    const sort_order = Number.isFinite(parsedSort) ? parsedSort : 0;
+
+    if (!name || name.length > 80) return;
+
+    const icon_public_id = String(formData.get("icon_public_id") || "").trim();
 
     const payload = {
       name,
-      group: group || "languages",
+      group,
       icon_url: icon_url || null,
+      icon_public_id: icon_public_id || null,
       published,
       sort_order,
     };
 
     if (id) {
+      const { data: existing } = await supabaseAdmin
+        .from("skills")
+        .select("icon_public_id")
+        .eq("id", id)
+        .single();
+      const oldPublicId = existing?.icon_public_id;
+      if (oldPublicId && oldPublicId !== payload.icon_public_id) {
+        try { await cloudinary.uploader.destroy(oldPublicId); } catch (err) { console.error("Failed to delete old skill icon:", err); }
+      }
       await supabaseAdmin.from("skills").update(payload).eq("id", id);
     } else {
       await supabaseAdmin.from("skills").insert([payload]);

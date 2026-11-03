@@ -1,12 +1,29 @@
 import { Container } from "@/components/layout/container";
+import { createServerSupabase } from "@/lib/supabase/server";
 
-export default function Contact() {
-  const links = [
-    { label: "GitHub", href: "https://github.com/adtbch" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/adityabachtiarr" },
-    { label: "Instagram", href: "https://www.instagram.com/adtb___/" },
-    { label: "Email", href: "mailto:adit.bachtiar091@gmail.com" },
-  ];
+export default async function Contact() {
+  const supabase = createServerSupabase();
+  const { data: socials } = await supabase
+    .from("socials")
+    .select("platform,label,url")
+    .eq("published", true)
+    .order("sort_order");
+
+  const links =
+    socials && socials.length > 0
+      ? socials.map((s: any) => ({
+          label: s.label || s.platform,
+          href:
+            s.platform === "email"
+              ? "https://mail.google.com/mail/?view=cm&fs=1&to=adit.bachtiar091@gmail.com"
+              : s.url,
+        }))
+      : [
+          { label: "GitHub", href: "https://github.com/adtbch" },
+          { label: "LinkedIn", href: "https://www.linkedin.com/in/adityabachtiarr" },
+          { label: "Instagram", href: "https://www.instagram.com/adtb___/" },
+          { label: "Email", href: "https://mail.google.com/mail/?view=cm&fs=1&to=adit.bachtiar091@gmail.com" },
+        ];
 
   return (
     <section id="contact" className="py-16 sm:py-24">
@@ -22,7 +39,7 @@ export default function Contact() {
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-          {links.map((link) => (
+          {links.map((link: any) => (
             <a
               key={link.label}
               href={link.href}

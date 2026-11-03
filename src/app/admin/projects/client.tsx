@@ -10,16 +10,46 @@ interface Props {
 }
 
 export default function ProjectClientManager({ projects, onSaveAction, onDeleteAction }: Props) {
+  const [uploading, setUploading] = useState(false);
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>, setUrl: (url: string) => void, folderName: string = "projects") {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      data.append("folder", folderName);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: data });
+      const json = await res.json();
+      if (json.url) {
+        setUrl(json.url);
+      } else {
+        alert(json.error || "Upload failed");
+      }
+    } catch (err) {
+      alert("Upload error");
+    } finally {
+      setUploading(false);
+    }
+  }
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [coverUrl, setCoverUrl] = useState("");
+  const [imagesText, setImagesText] = useState("");
 
   function openAddModal() {
     setEditingProject(null);
+    setCoverUrl("");
+    setImagesText("");
     setIsModalOpen(true);
   }
 
   function openEditModal(project: Project) {
     setEditingProject(project);
+    setCoverUrl(project.cover_image_url || "");
+    setImagesText(project.images ? project.images.map(img => img.url).join("\n") : "");
     setIsModalOpen(true);
   }
 
@@ -145,6 +175,35 @@ export default function ProjectClientManager({ projects, onSaveAction, onDeleteA
                 />
               </div>
 
+              <div>
+                <label className="block text-xs font-mono uppercase text-[#a1a1aa] mb-1">Cover Image URL</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="text"
+                    name="cover_image_url"
+                    value={coverUrl}
+                    onChange={(e) => setCoverUrl(e.target.value)}
+                    placeholder="https://... or upload image"
+                    className="w-full bg-[#0f0f0f] border border-[#2a2a2a] text-[#f5f5f7] p-2 text-sm focus:outline-none focus:border-[#22d3ee]"
+                  />
+                  <label className={`cursor-pointer bg-[#2a2a2a] hover:bg-[#333] text-[#f5f5f7] px-3 py-2 font-mono text-xs whitespace-nowrap border border-[#333] ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                    {uploading ? 'Uploading...' : 'Upload Cover'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleFileUpload(e, setCoverUrl, "projects")}
+                    />
+                  </label>
+                </div>
+                {coverUrl && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <img src={coverUrl} alt="Cover Preview" className="w-12 h-12 object-cover border border-[#2a2a2a]" />
+                    <span className="text-xs text-[#a1a1aa] truncate">{coverUrl}</span>
+                  </div>
+                )}
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-mono uppercase text-[#a1a1aa] mb-1">Category</label>
@@ -157,6 +216,7 @@ export default function ProjectClientManager({ projects, onSaveAction, onDeleteA
                     <option value="backend">Backend</option>
                     <option value="iot">IoT</option>
                     <option value="fullstack">Fullstack</option>
+                    <option value="mobile">Mobile</option>
                   </select>
                 </div>
                 <div>
@@ -219,6 +279,50 @@ export default function ProjectClientManager({ projects, onSaveAction, onDeleteA
                     className="w-full bg-[#0f0f0f] border border-[#2a2a2a] text-[#f5f5f7] p-2 text-sm focus:outline-none focus:border-[#22d3ee]"
                   />
                 </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-xs font-mono uppercase text-[#a1a1aa]">Documentation Images (one URL per line)</label>
+                  <label className={`cursor-pointer bg-[#2a2a2a] hover:bg-[#333] text-[#f5f5f7] px-2 py-1 font-mono text-xs border border-[#333] ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                    {uploading ? 'Uploading...' : '+ Upload Documentation Image'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setUploading(true);
+                        try {
+                          const data = new FormData();
+                          data.append("file", file);
+                          data.append("folder", "projects/documentation");
+                          const res = await fetch("/api/admin/upload", { method: "POST", body: data });
+                          const json = await res.json();
+                          if (json.url) {
+                            setImagesText((prev) => (prev ? prev + "\n" + json.url : json.url));
+                          } else {
+                            alert(json.error || "Upload failed");
+                          }
+                        } catch (err) {
+                          alert("Upload error");
+                        } finally {
+                          setUploading(false);
+                          e.target.value = "";
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+                <textarea
+                  name="images"
+                  rows={4}
+                  value={imagesText}
+                  onChange={(e) => setImagesText(e.target.value)}
+                  placeholder="https://.../image-1.png&#10;https://.../image-2.png"
+                  className="w-full bg-[#0f0f0f] border border-[#2a2a2a] text-[#f5f5f7] p-2 text-sm focus:outline-none focus:border-[#22d3ee]"
+                />
               </div>
 
               <div>

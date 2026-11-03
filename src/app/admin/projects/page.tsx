@@ -6,6 +6,14 @@ import { createServerSupabase } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import ProjectClientManager from "./client";
 import { isAdminAuthed } from "@/lib/admin/auth";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 async function ProjectsContent() {
   const cookieStore = await cookies();
@@ -30,29 +38,44 @@ async function ProjectsContent() {
       redirect("/admin/login");
     }
     const supabaseAdmin = createServerSupabase(true);
-    const id = formData.get("id") as string;
-    const title = formData.get("title") as string;
-    const slug = formData.get("slug") as string;
-    const subtitle = formData.get("subtitle") as string;
-    const category = formData.get("category") as string;
-    const description = formData.get("description") as string;
-    const live_url = formData.get("live_url") as string;
-    const repo_url = formData.get("repo_url") as string;
-    const tech_stack_raw = formData.get("tech_stack") as string;
+    const id = String(formData.get("id") || "");
+    const title = String(formData.get("title") || "").trim();
+    const rawSlug = String(formData.get("slug") || "").trim();
+    const slug = rawSlug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const subtitle = String(formData.get("subtitle") || "").trim();
+    const allowedCategories = ["web", "backend", "iot", "fullstack", "mobile"] as const;
+    const requestedCategory = String(formData.get("category") || "web");
+    const category = allowedCategories.includes(requestedCategory as (typeof allowedCategories)[number]) ? requestedCategory : "web";
+    const description = String(formData.get("description") || "").trim();
+    const live_url = String(formData.get("live_url") || "").trim();
+    const repo_url = String(formData.get("repo_url") || "").trim();
+    if (!title || title.length > 150 || !slug || slug.length > 150) return;
+    const tech_stack_raw = String(formData.get("tech_stack") || "");
     const tech_stack = tech_stack_raw ? tech_stack_raw.split(",").map((s) => s.trim()).filter(Boolean) : [];
+    const images_raw = String(formData.get("images") || "");
+    const images = images_raw
+      .split("\n")
+      .map((u) => u.trim())
+      .filter((u) => u.length > 0 && /^https?:\/\//i.test(u))
+      .map((u) => ({ url: u }));
     const featured = formData.get("featured") === "on";
     const published = formData.get("published") === "on";
+    const cover_public_id = String(formData.get("cover_public_id") || "").trim();
     const sort_order = parseInt(formData.get("sort_order") as string || "0", 10);
 
     const payload = {
       title,
-      slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      slug,
       subtitle: subtitle || null,
-      category: category || null,
+      cover_image_url: String(formData.get("cover_image_url") || "").trim() || null,
+      cover_public_id: cover_public_id || null,
+      category,
       description: description || null,
       live_url: live_url || null,
       repo_url: repo_url || null,
       tech_stack,
+      images,
+      gallery: images.map((img) => img.url),
       featured,
       published,
       sort_order,
@@ -60,6 +83,15 @@ async function ProjectsContent() {
     };
 
     if (id) {
+      const { data: existing } = await supabaseAdmin
+        .from("projects")
+        .select("cover_public_id")
+        .eq("id", id)
+        .single();
+      const oldPublicId = existing?.cover_public_id;
+      if (oldPublicId && oldPublicId !== payload.cover_public_id) {
+        try { await cloudinary.uploader.destroy(oldPublicId); } catch (err) { console.error("Failed to delete old project cover:", err); }
+      }
       await supabaseAdmin.from("projects").update(payload).eq("id", id);
     } else {
       await supabaseAdmin.from("projects").insert([payload]);
