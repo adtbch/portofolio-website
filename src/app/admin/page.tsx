@@ -8,7 +8,7 @@ import { isAdminAuthed } from "@/lib/admin/auth";
 async function DashboardContent() {
   const cookieStore = await cookies();
   const session = cookieStore.get("admin_session");
-  if (!isAdminAuthed(session?.value)) {
+  if (!(await isAdminAuthed(session?.value))) {
     redirect("/admin/login");
   }
 

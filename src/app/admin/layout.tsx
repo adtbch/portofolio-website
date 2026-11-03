@@ -7,7 +7,7 @@ import { isAdminAuthed } from "@/lib/admin/auth";
 async function AdminHeader() {
   const cookieStore = await cookies();
   const session = cookieStore.get("admin_session");
-  const isAuthenticated = isAdminAuthed(session?.value);
+  const isAuthenticated = await isAdminAuthed(session?.value);
 
   if (!isAuthenticated) return null;
 
