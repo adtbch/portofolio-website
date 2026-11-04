@@ -1,6 +1,8 @@
 function getSecret(): string {
-  const secret = process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD;
-  if (!secret) throw new Error("ADMIN_SESSION_SECRET or ADMIN_PASSWORD required");
+  const secret = process.env.ADMIN_SESSION_SECRET;
+  if (!secret || secret.trim() === "") {
+    throw new Error("ADMIN_SESSION_SECRET is required");
+  }
   return secret.trim();
 }
 

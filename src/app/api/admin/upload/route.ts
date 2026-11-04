@@ -1,16 +1,9 @@
 import "server-only";
-import { v2 as cloudinary } from "cloudinary";
+import { cloudinary } from "@/lib/cloudinary/server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { isAdminAuthed } from "@/lib/admin/auth";
-import crypto from "crypto";
-
-cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
+import crypto from "node:crypto";
 
 function getFolder(subfolder: string) {
   const base = process.env.CLOUDINARY_FOLDER || "MyPortfolioWebsite";
@@ -39,8 +32,6 @@ export async function POST(request: Request) {
     const hash = crypto.createHash("sha256").update(buffer).digest("hex").slice(0, 16);
     const subfolder = folder || "misc";
     const uploadFolder = getFolder(subfolder);
-    const publicId = hash;
-    const fullPublicId = `${uploadFolder}/${publicId}`;
 
     // Reuse existing asset before calling upload: true idempotency.
     const existing = await cloudinary.api
@@ -78,6 +69,10 @@ export async function POST(request: Request) {
     });
   } catch (error: any) {
     console.error("Cloudinary upload error:", error);
-    return NextResponse.json({ error: error.message || "Upload failed" }, { status: 500 });
+    const message = error?.message?.toString() || "";
+    if (message.includes("Invalid API key") || message.includes("Must supply api_key")) {
+      return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    }
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }

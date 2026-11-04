@@ -7,14 +7,7 @@ import { revalidatePath } from "next/cache";
 import ExperienceClientManager from "./client";
 import { isAdminAuthed } from "@/lib/admin/auth";
 import type { Project } from "@/types";
-import { v2 as cloudinary } from "cloudinary";
-
-cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
+import { cloudinary } from "@/lib/cloudinary/server";
 
 async function ExperiencesContent() {
   const cookieStore = await cookies();
