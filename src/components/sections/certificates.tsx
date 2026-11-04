@@ -1,7 +1,7 @@
 import { SectionHeading } from "@/components/shared/section-heading";
 import { Container } from "@/components/layout/container";
 import { getCertificates } from "@/lib/queries";
-import { TechBadge } from "@/components/shared/tech-badge";
+import { CertificateImage } from "./certificate-image";
 
 export default async function Certificates() {
   const certs = await getCertificates();
@@ -24,19 +24,11 @@ export default async function Certificates() {
                 className="group flex flex-col border border-border bg-surface overflow-hidden"
               >
                 {cert.image_url && (
-                  <a
-                    href={cert.credential_url || cert.image_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="relative block aspect-[4/3] overflow-hidden border-b border-border bg-black/20"
-                  >
-                    <img
-                      src={cert.image_url}
-                      alt={cert.title}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </a>
+                  <CertificateImage
+                    src={cert.image_url}
+                    alt={cert.title}
+                    className="aspect-[4/3]"
+                  />
                 )}
                 <div className="flex flex-1 flex-col justify-between gap-4 p-6">
                   <div className="flex flex-col gap-2">
