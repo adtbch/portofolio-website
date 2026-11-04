@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Social } from "@/types";
+import { AutoSortButton } from "../auto-sort-button";
 
 interface Props {
   socials: Social[];
@@ -43,12 +44,15 @@ export default function SocialsClientManager({ socials, onSaveAction, onDeleteAc
     <div>
       <div className="flex justify-between items-center mb-6">
         <span className="text-xs font-mono text-[#a1a1aa]">Total Social Links: {socials.length}</span>
-        <button
-          onClick={openAddModal}
-          className="bg-[#22d3ee] text-[#0f0f0f] font-mono text-xs uppercase font-bold px-4 py-2 hover:bg-[#06b6d4] transition-colors"
-        >
-          + Add New Social Link
-        </button>
+        <div className="flex items-center gap-2">
+          <AutoSortButton table="socials" nameLabel="Platform" />
+          <button
+            onClick={openAddModal}
+            className="bg-[#22d3ee] text-[#0f0f0f] font-mono text-xs uppercase font-bold px-4 py-2 hover:bg-[#06b6d4] transition-colors"
+          >
+            + Add New Social Link
+          </button>
+        </div>
       </div>
 
       <div className="bg-[#151515] border border-[#2a2a2a] overflow-x-auto">

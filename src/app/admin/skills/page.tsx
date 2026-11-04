@@ -123,54 +123,6 @@ async function SkillsContent() {
     }
   }
 
-  async function handleAutoSort(formData: FormData) {
-    "use server";
-    const cookieStore = await cookies();
-    if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
-      redirect("/admin/login");
-    }
-
-    const mode = String(formData.get("mode") || "name-asc");
-    const groupOrder = ["languages", "frameworks", "databases", "tools", "embedded"];
-
-    const supabaseAdmin = createServerSupabase(true);
-    const { data: rows, error } = await supabaseAdmin
-      .from("skills")
-      .select("id, name, group, sort_order");
-
-    if (error || !rows?.length) {
-      console.error("handleAutoSort: fetch error", error);
-      return;
-    }
-
-    const sorted = [...rows].sort((a, b) => {
-      if (mode === "group") {
-        const ga = groupOrder.indexOf(a.group);
-        const gb = groupOrder.indexOf(b.group);
-        if (ga !== gb) return ga - gb;
-        return a.name.localeCompare(b.name, "id", { sensitivity: "base" });
-      }
-      if (mode === "name-desc") {
-        return b.name.localeCompare(a.name, "id", { sensitivity: "base" });
-      }
-      return a.name.localeCompare(b.name, "id", { sensitivity: "base" });
-    });
-
-    const updates = sorted.map((row, index) =>
-      supabaseAdmin.from("skills").update({ sort_order: index }).eq("id", row.id)
-    );
-
-    const results = await Promise.all(updates);
-    const failed = results.filter((r) => r.error);
-    if (failed.length) {
-      console.error("handleAutoSort: some updates failed", failed.map((f) => f.error));
-      throw new Error(`Gagal update ${failed.length} skill`);
-    }
-
-    revalidatePath("/admin/skills");
-    revalidatePath("/");
-  }
-
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-8">
@@ -187,7 +139,6 @@ async function SkillsContent() {
         skills={skills || []}
         onSaveAction={handleSave}
         onDeleteAction={handleDelete}
-        onAutoSortAction={handleAutoSort}
       />
     </div>
   );
