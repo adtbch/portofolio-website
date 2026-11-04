@@ -44,7 +44,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     <article className="py-12 sm:py-16 lg:py-20">
       <Container className="flex flex-col gap-10">
         <Link
-          href="#/works"
+          href="/#works"
           className="font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
         >
           &larr; Kembali

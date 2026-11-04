@@ -44,6 +44,16 @@ export function Preloader() {
     }
   }, [progress]);
 
+  // Fallback: jangan pernah biarkan overlay menutupi halaman lebih dari 2.5s,
+  // walau event "load" atau animasi tidak pernah selesai (tab hidden, dsb).
+  useEffect(() => {
+    const failsafe = setTimeout(() => {
+      setProgress(100);
+      setLoading(false);
+    }, 2500);
+    return () => clearTimeout(failsafe);
+  }, []);
+
   if (shouldReduceMotion) {
     return null;
   }

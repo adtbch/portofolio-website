@@ -31,6 +31,11 @@ body {
   font-family: var(--font-body), sans-serif;
 }
 
+/* Offset untuk anchor link karena header sticky 4rem */
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
 @keyframes nav-progress-pulse {
   0%,
   100% {

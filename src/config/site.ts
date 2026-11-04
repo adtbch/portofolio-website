@@ -13,11 +13,11 @@ export const siteConfig = {
     text: "Tersedia untuk bekerja",
   },
   nav: [
-    { label: "Tentang", href: "#about" },
-    { label: "Pengalaman", href: "#experience" },
-    { label: "Karya", href: "#works" },
-    { label: "Prestasi", href: "#certificates" },
-    { label: "Kontak", href: "#contact" },
+    { label: "Tentang", href: "/#about" },
+    { label: "Pengalaman", href: "/#experience" },
+    { label: "Karya", href: "/#works" },
+    { label: "Prestasi", href: "/#certificates" },
+    { label: "Kontak", href: "/#contact" },
   ],
 } as const;
 

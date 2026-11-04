@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Preloader } from "@/components/shared/preloader";
 import { NavProgress } from "@/components/shared/nav-progress";
+import { HashScroll } from "@/components/shared/section-link";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -31,6 +32,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Preloader />
         <Suspense fallback={null}>
           <NavProgress />
+        </Suspense>
+        <Suspense fallback={null}>
+          <HashScroll />
         </Suspense>
         <Suspense fallback={null}>
           <Header />

@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { Container } from "@/components/layout/container";
+import { SectionLink } from "@/components/shared/section-link";
 
 export function Header() {
   const pathname = usePathname();
@@ -13,7 +13,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/80 border-b border-border">
       <Container className="flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link
+          <SectionLink
             href="/"
             className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:rounded-sm"
           >
@@ -23,7 +23,7 @@ export function Header() {
             <span className="text-muted-foreground font-mono text-xs hidden sm:inline-block">
               // dev
             </span>
-          </Link>
+          </SectionLink>
 
           {siteConfig.status.available && (
             <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 text-xs font-mono text-muted-foreground bg-surface border border-border">
@@ -38,29 +38,29 @@ export function Header() {
 
         <nav aria-label="Navigasi utama" className="hidden md:flex items-center gap-6">
                 {siteConfig.nav.map((item) => (
-                  <Link
+                  <SectionLink
                     key={item.href}
                     href={item.href}
                     className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:rounded-sm"
                   >
                     {item.label}
-                  </Link>
+                  </SectionLink>
                 ))}
-                <Link
+                <SectionLink
                   href="/admin"
                   className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:rounded-sm"
                 >
                   Admin Panel
-                </Link>
+                </SectionLink>
               </nav>
 
         <div className="flex items-center gap-4">
-          <Link
-            href="#contact"
+          <SectionLink
+            href="/#contact"
             className="md:hidden inline-flex items-center justify-center min-h-[48px] px-3 py-1 text-xs font-mono font-medium text-foreground hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
           >
             Kontak
-          </Link>
+          </SectionLink>
         </div>
       </Container>
     </header>

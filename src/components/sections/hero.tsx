@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SectionLink } from "@/components/shared/section-link";
 import { Container } from "@/components/layout/container";
 import { StatusBadge } from "@/components/shared/status-badge";
 import ProfileCard from "@/components/reactbits/ProfileCard";
@@ -35,8 +35,8 @@ export default function Hero({ name, role, description, cta_primary_label, cta_p
             <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">{description}</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link href={cta_primary_href} className="inline-flex items-center justify-center min-h-[48px] px-6 py-3 text-sm font-medium border border-border bg-foreground text-background hover:opacity-90 transition-opacity">{cta_primary_label}</Link>
-            <Link href={cta_secondary_href} className="inline-flex items-center justify-center min-h-[48px] px-6 py-3 text-sm font-medium border border-border text-foreground hover:bg-surface transition-colors">{cta_secondary_label}</Link>
+            <SectionLink href={cta_primary_href} className="inline-flex items-center justify-center min-h-[48px] px-6 py-3 text-sm font-medium border border-border bg-foreground text-background hover:opacity-90 transition-opacity">{cta_primary_label}</SectionLink>
+            <SectionLink href={cta_secondary_href} className="inline-flex items-center justify-center min-h-[48px] px-6 py-3 text-sm font-medium border border-border text-foreground hover:bg-surface transition-colors">{cta_secondary_label}</SectionLink>
           </div>
         </div>
       </Container>
