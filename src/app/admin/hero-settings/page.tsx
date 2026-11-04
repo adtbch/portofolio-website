@@ -17,7 +17,7 @@ cloudinary.config({
 
 async function HeroSettingsContent() {
   const cookieStore = await cookies();
-  if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+  if (!(await isAdminAuthed(cookieStore.get("admin_session")?.value))) {
     redirect("/admin/login");
   }
 
@@ -34,7 +34,7 @@ async function HeroSettingsContent() {
   async function handleSave(formData: FormData) {
     "use server";
     const cookieStore = await cookies();
-    if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+    if (!(await isAdminAuthed(cookieStore.get("admin_session")?.value))) {
       redirect("/admin/login");
     }
     const supabaseAdmin = createServerSupabase(true);
@@ -96,7 +96,7 @@ async function HeroSettingsContent() {
   async function handleDelete(formData: FormData) {
     "use server";
     const cookieStore = await cookies();
-    if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+    if (!(await isAdminAuthed(cookieStore.get("admin_session")?.value))) {
       redirect("/admin/login");
     }
     const supabaseAdmin = createServerSupabase(true);

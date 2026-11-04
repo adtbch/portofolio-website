@@ -19,7 +19,7 @@ function getFolder(subfolder: string) {
 
 export async function POST(request: Request) {
   const cookieStore = await cookies();
-  if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+  if (!(await isAdminAuthed(cookieStore.get("admin_session")?.value))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

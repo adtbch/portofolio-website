@@ -9,7 +9,7 @@ import { isAdminAuthed } from "@/lib/admin/auth";
 
 async function ContactMessagesContent() {
   const cookieStore = await cookies();
-  if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+  if (!(await isAdminAuthed(cookieStore.get("admin_session")?.value))) {
     redirect("/admin/login");
   }
 
@@ -26,7 +26,7 @@ async function ContactMessagesContent() {
   async function handleUpdateStatus(formData: FormData) {
     "use server";
     const cookieStore = await cookies();
-    if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+    if (!(await isAdminAuthed(cookieStore.get("admin_session")?.value))) {
       redirect("/admin/login");
     }
     const supabaseAdmin = createServerSupabase(true);
@@ -42,7 +42,7 @@ async function ContactMessagesContent() {
   async function handleDelete(formData: FormData) {
     "use server";
     const cookieStore = await cookies();
-    if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+    if (!(await isAdminAuthed(cookieStore.get("admin_session")?.value))) {
       redirect("/admin/login");
     }
     const supabaseAdmin = createServerSupabase(true);

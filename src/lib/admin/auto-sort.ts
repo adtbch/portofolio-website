@@ -24,7 +24,7 @@ const GROUP_ORDER = ["languages", "frameworks", "databases", "tools", "embedded"
 
 export async function autoSort(formData: FormData) {
   const cookieStore = await cookies();
-  if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+  if (!(await isAdminAuthed(cookieStore.get("admin_session")?.value))) {
     redirect("/admin/login");
   }
 

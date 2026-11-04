@@ -17,7 +17,7 @@ cloudinary.config({
 
 async function SkillsContent() {
   const cookieStore = await cookies();
-  if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+  if (!(await isAdminAuthed(cookieStore.get("admin_session")?.value))) {
     redirect("/admin/login");
   }
 
@@ -35,7 +35,7 @@ async function SkillsContent() {
     "use server";
     try {
       const cookieStore = await cookies();
-      if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+      if (!(await isAdminAuthed(cookieStore.get("admin_session")?.value))) {
         redirect("/admin/login");
       }
       const supabaseAdmin = createServerSupabase(true);
@@ -111,7 +111,7 @@ async function SkillsContent() {
   async function handleDelete(formData: FormData) {
     "use server";
     const cookieStore = await cookies();
-    if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+    if (!(await isAdminAuthed(cookieStore.get("admin_session")?.value))) {
       redirect("/admin/login");
     }
     const supabaseAdmin = createServerSupabase(true);
