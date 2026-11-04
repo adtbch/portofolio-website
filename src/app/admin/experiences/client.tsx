@@ -3,6 +3,8 @@
 import { useState } from "react";
 import type { Experience, Project } from "@/types";
 import { AutoSortButton } from "../auto-sort-button";
+import { SubmitButton } from "../submit-button";
+import { DeleteButton } from "../delete-button";
 import { ImageUploadField } from "../image-upload";
 
 type ProjectMinimal = Pick<Project, "id" | "title" | "slug">;
@@ -92,15 +94,7 @@ export default function ExperienceClientManager({ experiences, projects, onSaveA
                     </button>
                     <form action={onDeleteAction} className="inline">
                       <input type="hidden" name="id" value={exp.id} />
-                      <button
-                        type="submit"
-                        onClick={(e) => {
-                          if (!confirm("Yakin ingin menghapus pengalaman ini?")) e.preventDefault();
-                        }}
-                        className="bg-red-950/50 text-red-300 px-3 py-1 text-xs font-mono hover:bg-red-900"
-                      >
-                        Delete
-                      </button>
+                      <DeleteButton confirmMessage="Yakin ingin menghapus pengalaman ini?" className="bg-red-950/50 text-red-300 px-3 py-1 text-xs font-mono hover:bg-red-900">Delete</DeleteButton>
                     </form>
                   </td>
                 </tr>
@@ -285,12 +279,7 @@ export default function ExperienceClientManager({ experiences, projects, onSaveA
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="bg-[#22d3ee] text-[#0f0f0f] px-4 py-2 font-mono text-xs uppercase font-bold hover:bg-[#06b6d4]"
-                >
-                  Save Experience
-                </button>
+                <SubmitButton className="bg-[#22d3ee] text-[#0f0f0f] px-4 py-2 font-mono text-xs uppercase font-bold hover:bg-[#06b6d4]">Save Experience</SubmitButton>
               </div>
             </form>
           </div>

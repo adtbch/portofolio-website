@@ -30,3 +30,20 @@ body {
   color: var(--foreground);
   font-family: var(--font-body), sans-serif;
 }
+
+@keyframes nav-progress-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin {
+    animation-duration: 2s;
+  }
+}
+

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import type { SiteSetting } from "@/types";
 import React from "react";
+import { DeleteButton } from "../delete-button";
+import { SubmitButton } from "../submit-button";
 
 interface Props {
   settings: SiteSetting[];
@@ -70,15 +72,7 @@ export default function SiteSettingsClientManager({ settings, onSaveAction, onDe
                     </button>
                     <form action={onDeleteAction} className="inline">
                       <input type="hidden" name="key" value={setting.key} />
-                      <button
-                        type="submit"
-                        onClick={(e) => {
-                          if (!confirm("Yakin ingin menghapus pengaturan ini?")) e.preventDefault();
-                        }}
-                        className="bg-red-950/50 text-red-300 px-3 py-1 text-xs font-mono hover:bg-red-900"
-                      >
-                        Delete
-                      </button>
+                      <DeleteButton confirmMessage="Yakin ingin menghapus pengaturan ini?" className="bg-red-950/50 text-red-300 px-3 py-1 text-xs font-mono hover:bg-red-900">Delete</DeleteButton>
                     </form>
                   </td>
                 </tr>
@@ -135,12 +129,7 @@ export default function SiteSettingsClientManager({ settings, onSaveAction, onDe
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="bg-[#22d3ee] text-[#0f0f0f] px-4 py-2 font-mono text-xs uppercase font-bold hover:bg-[#06b6d4]"
-                >
-                  Save Setting
-                </button>
+                <SubmitButton className="bg-[#22d3ee] text-[#0f0f0f] px-4 py-2 font-mono text-xs uppercase font-bold hover:bg-[#06b6d4]">Save Setting</SubmitButton>
               </div>
             </form>
           </div>

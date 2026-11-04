@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { autoSort } from "@/lib/admin/auto-sort";
+import { Spinner } from "@/components/shared/spinner";
 
 interface Props {
   table: "skills" | "certificates" | "education" | "experiences" | "projects" | "socials";
@@ -90,8 +91,10 @@ export function AutoSortButton({ table, nameLabel = "Nama", groupLabel }: Props)
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="bg-[#22d3ee] text-[#0f0f0f] px-4 py-2 font-mono text-xs uppercase font-bold hover:bg-[#06b6d4] disabled:opacity-50"
+                  aria-busy={isPending}
+                  className="inline-flex items-center justify-center gap-2 bg-[#22d3ee] text-[#0f0f0f] px-4 py-2 font-mono text-xs uppercase font-bold hover:bg-[#06b6d4] disabled:opacity-50"
                 >
+                  {isPending && <Spinner />}
                   {isPending ? "Sorting..." : "Apply Sort"}
                 </button>
               </div>

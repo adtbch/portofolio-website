@@ -12,7 +12,23 @@ const Skills = dynamic(() => import("@/components/sections/skills"));
 const Contact = dynamic(() => import("@/components/sections/contact"));
 
 function SectionFallback({ label }: { label: string }) {
-  return <div className="py-20 text-center font-mono text-xs text-muted-foreground">Loading {label}...</div>;
+  return (
+    <div className="py-16 sm:py-24" aria-busy="true" aria-label={`Memuat ${label}`}>
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="mb-3 h-3 w-24 animate-pulse bg-border" />
+        <div className="mb-8 h-8 w-64 animate-pulse bg-border" />
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="border border-border bg-surface p-6">
+              <div className="mb-3 h-4 w-3/4 animate-pulse bg-border" />
+              <div className="mb-2 h-3 w-1/2 animate-pulse bg-border" />
+              <div className="h-3 w-2/3 animate-pulse bg-border" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function AnimatedSection({ children, delay = 0 }: { children: ReactNode; delay?: number }) {

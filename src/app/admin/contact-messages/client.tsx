@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { ContactMessage } from "@/types";
 import React from "react";
+import { DeleteButton } from "../delete-button";
 
 interface Props {
   messages: ContactMessage[];
@@ -90,16 +91,7 @@ export default function ContactMessagesClientManager({ messages, onUpdateStatusA
                       </form>
                       <form action={onDeleteAction} className="inline">
                         <input type="hidden" name="id" value={msg.id} />
-                        <button
-                          type="submit"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (!confirm("Yakin ingin menghapus pesan ini?")) e.preventDefault();
-                          }}
-                          className="bg-red-950/50 text-red-300 px-3 py-1 text-xs font-mono hover:bg-red-900"
-                        >
-                          Delete
-                        </button>
+                        <DeleteButton confirmMessage="Yakin ingin menghapus pesan ini?" className="bg-red-950/50 text-red-300 px-3 py-1 text-xs font-mono hover:bg-red-900">Delete</DeleteButton>
                       </form>
                     </td>
                   </tr>

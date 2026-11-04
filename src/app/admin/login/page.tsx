@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Spinner } from "@/components/shared/spinner";
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
@@ -75,7 +76,10 @@ export default function AdminLoginPage() {
             disabled={loading}
             className="w-full bg-[#22d3ee] text-[#0f0f0f] font-mono font-bold py-2 px-4 hover:bg-[#06b6d4] disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#22d3ee] focus-visible:ring-offset-1 focus-visible:ring-offset-[#0f0f0f]"
           >
-            {loading ? "Authenticating..." : "Login to Admin"}
+            <span className="inline-flex items-center justify-center gap-2">
+              {loading && <Spinner />}
+              {loading ? "Authenticating..." : "Login to Admin"}
+            </span>
           </button>
         </form>
       </div>

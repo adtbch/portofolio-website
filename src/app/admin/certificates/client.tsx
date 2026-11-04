@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { Spinner } from "@/components/shared/spinner";
 import type { Certificate } from "@/types";
 import { AutoSortButton } from "../auto-sort-button";
+import { DeleteButton } from "../delete-button";
 import { ImageUploadField } from "../image-upload";
 
 interface Props {
@@ -96,9 +98,12 @@ export default function CertificateClientManager({ certificates, onSaveAction, o
                     </button>
                     <form action={onDeleteAction} className="inline">
                       <input type="hidden" name="id" value={cert.id} />
-                      <button type="submit" className="text-xs font-mono text-red-400 hover:underline">
+                      <DeleteButton
+                        confirmMessage="Yakin ingin menghapus sertifikat ini?"
+                        className="text-xs font-mono text-red-400 hover:underline"
+                      >
                         Delete
-                      </button>
+                      </DeleteButton>
                     </form>
                   </td>
                 </tr>
@@ -221,8 +226,10 @@ export default function CertificateClientManager({ certificates, onSaveAction, o
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="bg-[#22d3ee] text-[#0f0f0f] font-mono text-xs uppercase font-bold px-4 py-2 hover:bg-[#06b6d4] disabled:opacity-50"
+                  aria-busy={isPending}
+                  className="inline-flex items-center justify-center gap-2 bg-[#22d3ee] text-[#0f0f0f] font-mono text-xs uppercase font-bold px-4 py-2 hover:bg-[#06b6d4] disabled:opacity-50"
                 >
+                  {isPending && <Spinner />}
                   {isPending ? "Saving..." : "Save"}
                 </button>
               </div>

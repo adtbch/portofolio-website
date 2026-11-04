@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { Spinner } from "@/components/shared/spinner";
 import type { Skill } from "@/types";
 import { AutoSortButton } from "../auto-sort-button";
+import { DeleteButton } from "../delete-button";
 import { ImageUploadField } from "../image-upload";
 
 interface Props {
@@ -87,15 +89,12 @@ export default function SkillClientManager({ skills, onSaveAction, onDeleteActio
                     </button>
                     <form action={onDeleteAction} className="inline">
                       <input type="hidden" name="id" value={skill.id} />
-                      <button
-                        type="submit"
-                        onClick={(e) => {
-                          if (!confirm("Yakin ingin menghapus skill ini?")) e.preventDefault();
-                        }}
+                      <DeleteButton
+                        confirmMessage="Yakin ingin menghapus skill ini?"
                         className="bg-red-950/50 text-red-300 px-3 py-1 text-xs font-mono hover:bg-red-900"
                       >
                         Delete
-                      </button>
+                      </DeleteButton>
                     </form>
                   </td>
                 </tr>
@@ -204,8 +203,10 @@ export default function SkillClientManager({ skills, onSaveAction, onDeleteActio
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="bg-[#22d3ee] text-[#0f0f0f] px-4 py-2 font-mono text-xs uppercase font-bold hover:bg-[#06b6d4] disabled:opacity-50"
+                  aria-busy={isPending}
+                  className="inline-flex items-center justify-center gap-2 bg-[#22d3ee] text-[#0f0f0f] px-4 py-2 font-mono text-xs uppercase font-bold hover:bg-[#06b6d4] disabled:opacity-50"
                 >
+                  {isPending && <Spinner />}
                   {isPending ? "Saving..." : "Save Skill"}
                 </button>
               </div>

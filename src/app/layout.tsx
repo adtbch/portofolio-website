@@ -5,6 +5,7 @@ import { siteConfig } from "@/config/site";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Preloader } from "@/components/shared/preloader";
+import { NavProgress } from "@/components/shared/nav-progress";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -28,6 +29,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans selection:bg-accent selection:text-accent-foreground">
         <Preloader />
+        <Suspense fallback={null}>
+          <NavProgress />
+        </Suspense>
         <Suspense fallback={null}>
           <Header />
         </Suspense>
