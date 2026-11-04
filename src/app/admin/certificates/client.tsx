@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import type { Certificate } from "@/types";
 import { AutoSortButton } from "../auto-sort-button";
+import { ImageUploadField } from "../image-upload";
 
 interface Props {
   certificates: Certificate[];
@@ -11,43 +12,27 @@ interface Props {
 }
 
 export default function CertificateClientManager({ certificates, onSaveAction, onDeleteAction }: Props) {
-  const [uploading, setUploading] = useState(false);
-
-  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>, setUrl: (url: string) => void, folderName: string = "certificates") {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const data = new FormData();
-      data.append("file", file);
-      data.append("folder", folderName);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: data });
-      const json = await res.json();
-      if (json.url) {
-        setUrl(json.url);
-      } else {
-        alert(json.error || "Upload failed");
-      }
-    } catch (err) {
-      alert("Upload error");
-    } finally {
-      setUploading(false);
-    }
-  }
+  const [isPending, startTransition] = useTransition();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCert, setEditingCert] = useState<Certificate | null>(null);
   const [imageUrl, setImageUrl] = useState("");
+  const [imagePublicId, setImagePublicId] = useState("");
+  const [sortOrder, setSortOrder] = useState(0);
 
   function openAddModal() {
     setEditingCert(null);
     setImageUrl("");
+    setImagePublicId("");
+    setSortOrder(certificates.length ? Math.max(...certificates.map((c) => c.sort_order ?? 0)) + 1 : 0);
     setIsModalOpen(true);
   }
 
   function openEditModal(cert: Certificate) {
     setEditingCert(cert);
     setImageUrl(cert.image_url || "");
+    setImagePublicId(cert.image_public_id || "");
+    setSortOrder(cert.sort_order ?? 0);
     setIsModalOpen(true);
   }
 
@@ -124,8 +109,14 @@ export default function CertificateClientManager({ certificates, onSaveAction, o
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
-          <div className="bg-[#151515] border border-[#2a2a2a] w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div
+          className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="bg-[#151515] border border-[#2a2a2a] w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-6 border-b border-[#2a2a2a] flex justify-between items-center">
               <h2 className="font-heading text-lg font-semibold">
                 {editingCert ? "Edit Certificate" : "Add New Certificate"}
@@ -134,8 +125,20 @@ export default function CertificateClientManager({ certificates, onSaveAction, o
                 ✕
               </button>
             </div>
-            <form action={onSaveAction} className="p-6 space-y-4">
+            <form
+              key={editingCert?.id ?? "new"}
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                startTransition(async () => {
+                  await onSaveAction(formData);
+                  setIsModalOpen(false);
+                });
+              }}
+              className="p-6 space-y-4"
+            >
               {editingCert && <input type="hidden" name="id" value={editingCert.id} />}
+              <input type="hidden" name="image_public_id" value={imagePublicId} />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-mono text-[#a1a1aa] mb-2">TITLE *</label>
@@ -173,38 +176,24 @@ export default function CertificateClientManager({ certificates, onSaveAction, o
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-mono text-[#a1a1aa] mb-2">IMAGE URL</label>
-                  <div className="flex items-center gap-3">
-                    <input
-                      name="image_url"
-                      value={imageUrl}
-                      onChange={(e) => setImageUrl(e.target.value)}
-                      placeholder="https://... or upload image"
-                      className="w-full bg-[#0f0f0f] border border-[#2a2a2a] px-3 py-2 text-sm focus:outline-none focus:border-[#22d3ee]"
-                    />
-                    <label className={`cursor-pointer bg-[#2a2a2a] hover:bg-[#333] text-[#f5f5f7] px-3 py-2 font-mono text-xs whitespace-nowrap border border-[#333] ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
-                      {uploading ? 'Uploading...' : 'Upload Image'}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => handleFileUpload(e, setImageUrl, "certificates")}
-                      />
-                    </label>
-                  </div>
-                  {imageUrl && (
-                    <div className="mt-2 flex items-center gap-2">
-                      <img src={imageUrl} alt="Preview" className="w-12 h-12 object-cover border border-[#2a2a2a]" />
-                      <span className="text-xs text-[#a1a1aa] truncate">{imageUrl}</span>
-                    </div>
-                  )}
+                  <ImageUploadField
+                    label="Image"
+                    value={imageUrl}
+                    folder="certificates"
+                    onChange={(url, publicId) => {
+                      setImageUrl(url);
+                      setImagePublicId(publicId);
+                    }}
+                    previewClass="w-12 h-12 object-cover border border-[#2a2a2a]"
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-mono text-[#a1a1aa] mb-2">SORT ORDER</label>
                   <input
                     type="number"
                     name="sort_order"
-                    defaultValue={editingCert?.sort_order || 0}
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(Number.parseInt(e.target.value || "0", 10) || 0)}
                     className="w-full bg-[#0f0f0f] border border-[#2a2a2a] px-3 py-2 text-sm focus:outline-none focus:border-[#22d3ee]"
                   />
                 </div>
@@ -231,10 +220,10 @@ export default function CertificateClientManager({ certificates, onSaveAction, o
                 </button>
                 <button
                   type="submit"
-                  onClick={() => setIsModalOpen(false)}
-                  className="bg-[#22d3ee] text-[#0f0f0f] font-mono text-xs uppercase font-bold px-4 py-2 hover:bg-[#06b6d4]"
+                  disabled={isPending}
+                  className="bg-[#22d3ee] text-[#0f0f0f] font-mono text-xs uppercase font-bold px-4 py-2 hover:bg-[#06b6d4] disabled:opacity-50"
                 >
-                  Save
+                  {isPending ? "Saving..." : "Save"}
                 </button>
               </div>
             </form>

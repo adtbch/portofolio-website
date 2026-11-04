@@ -3,6 +3,8 @@
 import { useState } from "react";
 import type { HeroSettings } from "@/types";
 
+import { ImageUploadField } from "../image-upload";
+
 interface Props {
   heroSettings: HeroSettings[];
   onSaveAction: (formData: FormData) => Promise<void>;
@@ -10,33 +12,6 @@ interface Props {
 }
 
 export default function HeroSettingsClientManager({ heroSettings, onSaveAction, onDeleteAction }: Props) {
-  const [uploading, setUploading] = useState(false);
-
-  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>, setUrl: (url: string) => void, setPublicId?: (id: string) => void, folderName: string = "hero") {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const data = new FormData();
-      data.append("file", file);
-      data.append("folder", folderName);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: data });
-      const json = await res.json();
-      if (json.url) {
-        setUrl(json.url);
-        if (setPublicId && json.public_id) {
-          setPublicId(json.public_id);
-        }
-      } else {
-        alert(json.error || "Upload failed");
-      }
-    } catch (err) {
-      alert("Upload error");
-    } finally {
-      setUploading(false);
-    }
-  }
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSetting, setEditingSetting] = useState<HeroSettings | null>(null);
   const [imageUrl, setImageUrl] = useState("");
@@ -210,32 +185,16 @@ export default function HeroSettingsClientManager({ heroSettings, onSaveAction, 
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-[#a1a1aa] mb-1">Image URL</label>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="text"
-                    name="image_url"
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="https://... or upload image"
-                    className="w-full bg-[#0f0f0f] border border-[#2a2a2a] text-[#f5f5f7] p-2 text-sm focus:outline-none focus:border-[#22d3ee]"
-                  />
-                  <label className={`cursor-pointer bg-[#2a2a2a] hover:bg-[#333] text-[#f5f5f7] px-3 py-2 font-mono text-xs whitespace-nowrap border border-[#333] ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
-                    {uploading ? 'Uploading...' : 'Upload Image'}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handleFileUpload(e, setImageUrl, setImagePublicId, "hero")}
-                    />
-                  </label>
-                </div>
-                {imageUrl && (
-                  <div className="mt-2 flex items-center gap-2">
-                    <img src={imageUrl} alt="Preview" className="w-12 h-12 object-cover border border-[#2a2a2a]" />
-                    <span className="text-xs text-[#a1a1aa] truncate">{imageUrl}</span>
-                  </div>
-                )}
+                <ImageUploadField
+                  label="Image"
+                  value={imageUrl}
+                  folder="hero"
+                  inputName="image_url"
+                  onChange={(url, publicId) => {
+                    setImageUrl(url);
+                    setImagePublicId(publicId);
+                  }}
+                />
               </div>
 
               <div>

@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import type { Skill } from "@/types";
 import { AutoSortButton } from "../auto-sort-button";
+import { ImageUploadField } from "../image-upload";
 
 interface Props {
   skills: Skill[];
@@ -11,36 +12,6 @@ interface Props {
 }
 
 export default function SkillClientManager({ skills, onSaveAction, onDeleteAction }: Props) {
-  const [uploading, setUploading] = useState(false);
-
-  async function handleFileUpload(
-    e: React.ChangeEvent<HTMLInputElement>,
-    setUrl: (url: string) => void,
-    setPublicId: (id: string) => void,
-    folderName: string = "skills"
-  ) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const data = new FormData();
-      data.append("file", file);
-      data.append("folder", folderName);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: data });
-      const json = await res.json();
-      if (json.url) {
-        setUrl(json.url);
-        setPublicId(json.public_id || "");
-      } else {
-        alert(json.error || "Upload failed");
-      }
-    } catch (err) {
-      alert("Upload error");
-    } finally {
-      setUploading(false);
-    }
-  }
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
   const [iconUrl, setIconUrl] = useState("");
@@ -183,35 +154,19 @@ export default function SkillClientManager({ skills, onSaveAction, onDeleteActio
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-[#a1a1aa] mb-1">Icon URL</label>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="text"
-                    name="icon_url"
-                    value={iconUrl}
-                    onChange={(e) => {
-                      setIconUrl(e.target.value);
-                      setIconPublicId("");
-                    }}
-                    placeholder="https://... or upload icon"
-                    className="w-full bg-[#0f0f0f] border border-[#2a2a2a] text-[#f5f5f7] p-2 text-sm focus:outline-none focus:border-[#22d3ee]"
-                  />
-                  <label className={`cursor-pointer bg-[#2a2a2a] hover:bg-[#333] text-[#f5f5f7] px-3 py-2 font-mono text-xs whitespace-nowrap border border-[#333] ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
-                    {uploading ? 'Uploading...' : 'Upload Icon'}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handleFileUpload(e, setIconUrl, setIconPublicId, "skills")}
-                    />
-                  </label>
-                </div>
-                {iconUrl && (
-                  <div className="mt-2 flex items-center gap-2">
-                    <img src={iconUrl} alt="Preview" className="w-10 h-10 object-contain border border-[#2a2a2a] bg-white p-1" />
-                    <span className="text-xs text-[#a1a1aa] truncate">{iconUrl}</span>
-                  </div>
-                )}
+                <ImageUploadField
+                  label="Icon"
+                  value={iconUrl}
+                  folder="skills"
+                  inputName="icon_url"
+                  uploadLabel="Upload Icon"
+                  placeholder="https://... or drag & drop / paste icon"
+                  previewClass="w-10 h-10 object-contain border border-[#2a2a2a] bg-white p-1"
+                  onChange={(url, publicId) => {
+                    setIconUrl(url);
+                    setIconPublicId(publicId);
+                  }}
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">

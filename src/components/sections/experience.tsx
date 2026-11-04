@@ -55,7 +55,7 @@ export default async function Experience() {
                     ))}
                   </div>
                 )}
-                {exp.projects && exp.projects.length > 0 && (
+                {Array.isArray(exp.projects) && exp.projects.length > 0 && (
                   <div className="mt-6 space-y-4">
                     <h4 className="font-mono text-xs uppercase text-muted-foreground">Proyek Terkait</h4>
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -66,16 +66,16 @@ export default async function Experience() {
                           className="group bg-surface border border-border rounded-lg p-4 hover:border-accent/50 transition-colors"
                         >
                           <div className="aspect-video mb-3 overflow-hidden rounded bg-muted">
-                            {proj.images && proj.images.length > 0 ? (
-                              <img
-                                src={proj.images[0].url}
-                                alt={proj.images[0].alt || proj.title}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                              />
-                            ) : proj.cover_image_url ? (
+                            {proj.cover_image_url ? (
                               <img
                                 src={proj.cover_image_url}
                                 alt={proj.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                            ) : proj.images && proj.images.length > 0 ? (
+                              <img
+                                src={proj.images[0].url}
+                                alt={proj.images[0].alt || proj.title}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               />
                             ) : proj.gallery && proj.gallery.length > 0 ? (

@@ -70,9 +70,17 @@ async function CertificatesContent() {
       if (oldPublicId && oldPublicId !== payload.image_public_id) {
         try { await cloudinary.uploader.destroy(oldPublicId); } catch (err) { console.error("Failed to delete old certificate image:", err); }
       }
-      await supabaseAdmin.from("certificates").update(payload).eq("id", id);
+      const { error: updateError } = await supabaseAdmin.from("certificates").update(payload).eq("id", id);
+      if (updateError) {
+        console.error("handleSave(certificates): update error", updateError);
+        throw new Error(updateError.message);
+      }
     } else {
-      await supabaseAdmin.from("certificates").insert([payload]);
+      const { error: insertError } = await supabaseAdmin.from("certificates").insert([payload]);
+      if (insertError) {
+        console.error("handleSave(certificates): insert error", insertError);
+        throw new Error(insertError.message);
+      }
     }
 
     revalidatePath("/admin/certificates");
