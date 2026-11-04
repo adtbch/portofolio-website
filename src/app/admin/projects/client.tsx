@@ -31,26 +31,92 @@ export default function ProjectClientManager({ projects, onSaveAction, onDeleteA
       alert("Upload error");
     } finally {
       setUploading(false);
+      e.target.value = "";
     }
   }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [coverUrl, setCoverUrl] = useState("");
-  const [imagesText, setImagesText] = useState("");
+  const [coverPublicId, setCoverPublicId] = useState("");
+  const [imagesList, setImagesList] = useState<string[]>([]);
 
   function openAddModal() {
     setEditingProject(null);
     setCoverUrl("");
-    setImagesText("");
+    setCoverPublicId("");
+    setImagesList([]);
     setIsModalOpen(true);
   }
 
   function openEditModal(project: Project) {
     setEditingProject(project);
     setCoverUrl(project.cover_image_url || "");
-    setImagesText(project.images ? project.images.map(img => img.url).join("\n") : "");
+    setCoverPublicId((project as any).cover_public_id || "");
+    if (project.images && project.images.length > 0) {
+      setImagesList(project.images.map((img: any) => img.url).filter(Boolean));
+    } else if ((project as any).gallery && Array.isArray((project as any).gallery)) {
+      setImagesList((project as any).gallery.filter(Boolean));
+    } else {
+      setImagesList([]);
+    }
     setIsModalOpen(true);
+  }
+
+  async function handleCoverUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      data.append("folder", "projects");
+      const res = await fetch("/api/admin/upload", { method: "POST", body: data });
+      const json = await res.json();
+      if (json.url) {
+        setCoverUrl(json.url);
+        setCoverPublicId(json.public_id || "");
+      } else {
+        alert(json.error || "Upload failed");
+      }
+    } catch (err) {
+      alert("Upload error");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  function removeCover() {
+    setCoverUrl("");
+    setCoverPublicId("");
+  }
+
+  async function handleDocUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      data.append("folder", "projects/documentation");
+      const res = await fetch("/api/admin/upload", { method: "POST", body: data });
+      const json = await res.json();
+      if (json.url) {
+        setImagesList((prev) => [...prev, json.url]);
+      } else {
+        alert(json.error || "Upload failed");
+      }
+    } catch (err) {
+      alert("Upload error");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  function removeImage(idx: number) {
+    setImagesList((prev) => prev.filter((_, i) => i !== idx));
   }
 
   return (
@@ -127,8 +193,8 @@ export default function ProjectClientManager({ projects, onSaveAction, onDeleteA
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 overflow-y-auto">
-          <div className="bg-[#151515] border border-[#2a2a2a] max-w-2xl w-full p-6 relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 overflow-y-auto" onClick={() => setIsModalOpen(false)}>
+          <div className="bg-[#151515] border border-[#2a2a2a] max-w-2xl w-full p-6 relative max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <h2 className="text-lg font-bold font-mono text-[#f5f5f7] mb-4">
               {editingProject ? `Edit Project: ${editingProject.title}` : "Add New Project"}
             </h2>
@@ -177,25 +243,30 @@ export default function ProjectClientManager({ projects, onSaveAction, onDeleteA
 
               <div>
                 <label className="block text-xs font-mono uppercase text-[#a1a1aa] mb-1">Cover Image URL</label>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   <input
                     type="text"
                     name="cover_image_url"
                     value={coverUrl}
                     onChange={(e) => setCoverUrl(e.target.value)}
                     placeholder="https://... or upload image"
-                    className="w-full bg-[#0f0f0f] border border-[#2a2a2a] text-[#f5f5f7] p-2 text-sm focus:outline-none focus:border-[#22d3ee]"
+                    className="flex-1 min-w-[200px] bg-[#0f0f0f] border border-[#2a2a2a] text-[#f5f5f7] p-2 text-sm focus:outline-none focus:border-[#22d3ee]"
                   />
-                  <label className={`cursor-pointer bg-[#2a2a2a] hover:bg-[#333] text-[#f5f5f7] px-3 py-2 font-mono text-xs whitespace-nowrap border border-[#333] ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
-                    {uploading ? 'Uploading...' : 'Upload Cover'}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handleFileUpload(e, setCoverUrl, "projects")}
-                    />
+                  <label className={`cursor-pointer bg-[#2a2a2a] hover:bg-[#333] text-[#f5f5f7] px-3 py-2 font-mono text-xs whitespace-nowrap border border-[#333] ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
+                    {uploading ? "Uploading..." : "Upload Cover"}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
                   </label>
+                  {coverUrl && (
+                    <button
+                      type="button"
+                      onClick={removeCover}
+                      className="bg-red-950/50 text-red-300 px-3 py-2 font-mono text-xs border border-red-900/40 hover:bg-red-900"
+                    >
+                      Remove cover
+                    </button>
+                  )}
                 </div>
+                <input type="hidden" name="cover_public_id" value={coverPublicId} />
                 {coverUrl && (
                   <div className="mt-2 flex items-center gap-2">
                     <img src={coverUrl} alt="Cover Preview" className="w-12 h-12 object-cover border border-[#2a2a2a]" />
@@ -283,46 +354,29 @@ export default function ProjectClientManager({ projects, onSaveAction, onDeleteA
 
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <label className="block text-xs font-mono uppercase text-[#a1a1aa]">Documentation Images (one URL per line)</label>
-                  <label className={`cursor-pointer bg-[#2a2a2a] hover:bg-[#333] text-[#f5f5f7] px-2 py-1 font-mono text-xs border border-[#333] ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
-                    {uploading ? 'Uploading...' : '+ Upload Documentation Image'}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
-                        setUploading(true);
-                        try {
-                          const data = new FormData();
-                          data.append("file", file);
-                          data.append("folder", "projects/documentation");
-                          const res = await fetch("/api/admin/upload", { method: "POST", body: data });
-                          const json = await res.json();
-                          if (json.url) {
-                            setImagesText((prev) => (prev ? prev + "\n" + json.url : json.url));
-                          } else {
-                            alert(json.error || "Upload failed");
-                          }
-                        } catch (err) {
-                          alert("Upload error");
-                        } finally {
-                          setUploading(false);
-                          e.target.value = "";
-                        }
-                      }}
-                    />
+                  <label className="block text-xs font-mono uppercase text-[#a1a1aa]">Documentation Images</label>
+                  <label className={`cursor-pointer bg-[#2a2a2a] hover:bg-[#333] text-[#f5f5f7] px-2 py-1 font-mono text-xs border border-[#333] ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
+                    {uploading ? "Uploading..." : "Upload & Add"}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleDocUpload} />
                   </label>
                 </div>
-                <textarea
-                  name="images"
-                  rows={4}
-                  value={imagesText}
-                  onChange={(e) => setImagesText(e.target.value)}
-                  placeholder="https://.../image-1.png&#10;https://.../image-2.png"
-                  className="w-full bg-[#0f0f0f] border border-[#2a2a2a] text-[#f5f5f7] p-2 text-sm focus:outline-none focus:border-[#22d3ee]"
-                />
+                <input type="hidden" name="images" value={imagesList.join("\n")} />
+                <div className="space-y-2 max-h-60 overflow-y-auto border border-[#2a2a2a] bg-[#0f0f0f] p-2">
+                  {imagesList.length === 0 && <div className="text-xs text-[#6b6b6b] font-mono p-2">No images</div>}
+                  {imagesList.map((url, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <img src={url} alt={`Doc ${idx + 1}`} className="w-12 h-12 object-cover border border-[#2a2a2a] flex-shrink-0" />
+                      <span className="text-xs text-[#a1a1aa] truncate flex-1">{url}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeImage(idx)}
+                        className="bg-red-950/50 text-red-300 px-2 py-1 font-mono text-xs border border-red-900/40 hover:bg-red-900"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div>

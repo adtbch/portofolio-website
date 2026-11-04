@@ -33,51 +33,79 @@ async function SkillsContent() {
 
   async function handleSave(formData: FormData) {
     "use server";
-    const cookieStore = await cookies();
-    if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
-      redirect("/admin/login");
-    }
-    const supabaseAdmin = createServerSupabase(true);
-    const id = String(formData.get("id") || "");
-    const name = String(formData.get("name") || "").trim();
-    const allowedGroups = ["languages", "frameworks", "databases", "tools", "embedded"] as const;
-    const requestedGroup = String(formData.get("group") || "languages");
-    const group = allowedGroups.includes(requestedGroup as (typeof allowedGroups)[number]) ? requestedGroup : "languages";
-    const icon_url = String(formData.get("icon_url") || "").trim();
-    const published = formData.get("published") === "on";
-    const parsedSort = Number.parseInt(String(formData.get("sort_order") || "0"), 10);
-    const sort_order = Number.isFinite(parsedSort) ? parsedSort : 0;
-
-    if (!name || name.length > 80) return;
-
-    const icon_public_id = String(formData.get("icon_public_id") || "").trim();
-
-    const payload = {
-      name,
-      group,
-      icon_url: icon_url || null,
-      icon_public_id: icon_public_id || null,
-      published,
-      sort_order,
-    };
-
-    if (id) {
-      const { data: existing } = await supabaseAdmin
-        .from("skills")
-        .select("icon_public_id")
-        .eq("id", id)
-        .single();
-      const oldPublicId = existing?.icon_public_id;
-      if (oldPublicId && oldPublicId !== payload.icon_public_id) {
-        try { await cloudinary.uploader.destroy(oldPublicId); } catch (err) { console.error("Failed to delete old skill icon:", err); }
+    try {
+      const cookieStore = await cookies();
+      if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+        redirect("/admin/login");
       }
-      await supabaseAdmin.from("skills").update(payload).eq("id", id);
-    } else {
-      await supabaseAdmin.from("skills").insert([payload]);
-    }
+      const supabaseAdmin = createServerSupabase(true);
+      const id = String(formData.get("id") || "");
+      const name = String(formData.get("name") || "").trim();
+      const allowedGroups = ["languages", "frameworks", "databases", "tools", "embedded"] as const;
+      const requestedGroup = String(formData.get("group") || "languages");
+      const group = allowedGroups.includes(requestedGroup as (typeof allowedGroups)[number]) ? requestedGroup : "languages";
+      const icon_url = String(formData.get("icon_url") || "").trim();
+      const published = formData.get("published") === "on";
+      const parsedSort = Number.parseInt(String(formData.get("sort_order") || "0"), 10);
+      const sort_order = Number.isFinite(parsedSort) ? parsedSort : 0;
 
-    revalidatePath("/admin/skills");
-    revalidatePath("/");
+      if (!name || name.length > 80) {
+        console.error("handleSave: invalid name", { nameLength: name.length });
+        return;
+      }
+
+      const icon_public_id = String(formData.get("icon_public_id") || "").trim();
+
+      const payload = {
+        name,
+        group,
+        icon_url: icon_url || null,
+        icon_public_id: icon_public_id || null,
+        published,
+        sort_order,
+      };
+
+      if (!payload.name) {
+        console.error("handleSave: payload.name missing");
+        return;
+      }
+
+      if (id) {
+        const { data: existing, error: existingError } = await supabaseAdmin
+          .from("skills")
+          .select("icon_public_id")
+          .eq("id", id)
+          .single();
+        if (existingError) {
+          console.error("handleSave: error fetching existing skill", existingError);
+        }
+        const oldPublicId = existing?.icon_public_id;
+        if (oldPublicId && oldPublicId !== payload.icon_public_id) {
+          try {
+            await cloudinary.uploader.destroy(oldPublicId);
+          } catch (err) {
+            console.error("Failed to delete old skill icon:", err);
+          }
+        }
+        const { error: updateError } = await supabaseAdmin.from("skills").update(payload).eq("id", id);
+        if (updateError) {
+          console.error("handleSave: update error", updateError);
+          throw updateError;
+        }
+      } else {
+        const { error: insertError } = await supabaseAdmin.from("skills").insert([payload]);
+        if (insertError) {
+          console.error("handleSave: insert error", insertError);
+          throw insertError;
+        }
+      }
+
+      revalidatePath("/admin/skills");
+      revalidatePath("/");
+    } catch (err) {
+      console.error("handleSave: unexpected error", err);
+      throw err;
+    }
   }
 
   async function handleDelete(formData: FormData) {
@@ -93,6 +121,54 @@ async function SkillsContent() {
       revalidatePath("/admin/skills");
       revalidatePath("/");
     }
+  }
+
+  async function handleAutoSort(formData: FormData) {
+    "use server";
+    const cookieStore = await cookies();
+    if (!isAdminAuthed(cookieStore.get("admin_session")?.value)) {
+      redirect("/admin/login");
+    }
+
+    const mode = String(formData.get("mode") || "name-asc");
+    const groupOrder = ["languages", "frameworks", "databases", "tools", "embedded"];
+
+    const supabaseAdmin = createServerSupabase(true);
+    const { data: rows, error } = await supabaseAdmin
+      .from("skills")
+      .select("id, name, group, sort_order");
+
+    if (error || !rows?.length) {
+      console.error("handleAutoSort: fetch error", error);
+      return;
+    }
+
+    const sorted = [...rows].sort((a, b) => {
+      if (mode === "group") {
+        const ga = groupOrder.indexOf(a.group);
+        const gb = groupOrder.indexOf(b.group);
+        if (ga !== gb) return ga - gb;
+        return a.name.localeCompare(b.name, "id", { sensitivity: "base" });
+      }
+      if (mode === "name-desc") {
+        return b.name.localeCompare(a.name, "id", { sensitivity: "base" });
+      }
+      return a.name.localeCompare(b.name, "id", { sensitivity: "base" });
+    });
+
+    const updates = sorted.map((row, index) =>
+      supabaseAdmin.from("skills").update({ sort_order: index }).eq("id", row.id)
+    );
+
+    const results = await Promise.all(updates);
+    const failed = results.filter((r) => r.error);
+    if (failed.length) {
+      console.error("handleAutoSort: some updates failed", failed.map((f) => f.error));
+      throw new Error(`Gagal update ${failed.length} skill`);
+    }
+
+    revalidatePath("/admin/skills");
+    revalidatePath("/");
   }
 
   return (
@@ -111,6 +187,7 @@ async function SkillsContent() {
         skills={skills || []}
         onSaveAction={handleSave}
         onDeleteAction={handleDelete}
+        onAutoSortAction={handleAutoSort}
       />
     </div>
   );

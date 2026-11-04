@@ -1,7 +1,13 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { siteConfig, socials } from "@/config/site";
 import { Container } from "@/components/layout/container";
 
 export function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <footer className="w-full border-t border-border bg-background py-8 mt-auto">
       <Container className="flex flex-col sm:flex-row items-center justify-between gap-4">

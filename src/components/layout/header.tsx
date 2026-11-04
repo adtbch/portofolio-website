@@ -1,8 +1,14 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { Container } from "@/components/layout/container";
 
 export function Header() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/80 border-b border-border">
       <Container className="flex h-16 items-center justify-between">
@@ -40,6 +46,12 @@ export function Header() {
                     {item.label}
                   </Link>
                 ))}
+                <Link
+                  href="/admin"
+                  className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:rounded-sm"
+                >
+                  Admin Panel
+                </Link>
               </nav>
 
         <div className="flex items-center gap-4">

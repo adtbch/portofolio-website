@@ -1,18 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import type { Skill } from "@/types";
 
 interface Props {
   skills: Skill[];
   onSaveAction: (formData: FormData) => Promise<void>;
   onDeleteAction: (formData: FormData) => Promise<void>;
+  onAutoSortAction: (formData: FormData) => Promise<void>;
 }
 
-export default function SkillClientManager({ skills, onSaveAction, onDeleteAction }: Props) {
+export default function SkillClientManager({ skills, onSaveAction, onDeleteAction, onAutoSortAction }: Props) {
   const [uploading, setUploading] = useState(false);
+  const [isAutoSortOpen, setIsAutoSortOpen] = useState(false);
 
-  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>, setUrl: (url: string) => void, folderName: string = "skills") {
+  async function handleFileUpload(
+    e: React.ChangeEvent<HTMLInputElement>,
+    setUrl: (url: string) => void,
+    setPublicId: (id: string) => void,
+    folderName: string = "skills"
+  ) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
@@ -24,6 +31,7 @@ export default function SkillClientManager({ skills, onSaveAction, onDeleteActio
       const json = await res.json();
       if (json.url) {
         setUrl(json.url);
+        setPublicId(json.public_id || "");
       } else {
         alert(json.error || "Upload failed");
       }
@@ -37,16 +45,24 @@ export default function SkillClientManager({ skills, onSaveAction, onDeleteActio
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
   const [iconUrl, setIconUrl] = useState("");
+  const [iconPublicId, setIconPublicId] = useState("");
+  const [sortOrder, setSortOrder] = useState(0);
+  const [isPending, startTransition] = useTransition();
 
   function openAddModal() {
     setEditingSkill(null);
     setIconUrl("");
+    setIconPublicId("");
+    const nextSort = skills.length ? Math.max(...skills.map((s) => s.sort_order)) + 1 : 0;
+    setSortOrder(nextSort);
     setIsModalOpen(true);
   }
 
   function openEditModal(skill: Skill) {
     setEditingSkill(skill);
     setIconUrl(skill.icon_url || "");
+    setIconPublicId(skill.icon_public_id || "");
+    setSortOrder(skill.sort_order);
     setIsModalOpen(true);
   }
 
@@ -54,12 +70,20 @@ export default function SkillClientManager({ skills, onSaveAction, onDeleteActio
     <div>
       <div className="flex justify-between items-center mb-6">
         <span className="text-xs font-mono text-[#a1a1aa]">Total Skills: {skills.length}</span>
-        <button
-          onClick={openAddModal}
-          className="bg-[#22d3ee] text-[#0f0f0f] font-mono text-xs uppercase font-bold px-4 py-2 hover:bg-[#06b6d4] transition-colors"
-        >
-          + Add New Skill
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsAutoSortOpen(true)}
+            className="bg-[#2a2a2a] text-[#f5f5f7] font-mono text-xs uppercase font-bold px-4 py-2 hover:bg-[#333] transition-colors"
+          >
+            Auto Sort
+          </button>
+          <button
+            onClick={openAddModal}
+            className="bg-[#22d3ee] text-[#0f0f0f] font-mono text-xs uppercase font-bold px-4 py-2 hover:bg-[#06b6d4] transition-colors"
+          >
+            + Add New Skill
+          </button>
+        </div>
       </div>
 
       <div className="bg-[#151515] border border-[#2a2a2a] overflow-x-auto">
@@ -117,20 +141,26 @@ export default function SkillClientManager({ skills, onSaveAction, onDeleteActio
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 overflow-y-auto">
-          <div className="bg-[#151515] border border-[#2a2a2a] max-w-md w-full p-6 relative">
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 overflow-y-auto" onClick={() => setIsModalOpen(false)}>
+          <div className="bg-[#151515] border border-[#2a2a2a] max-w-md w-full p-6 relative" onClick={(e) => e.stopPropagation()}>
             <h2 className="text-lg font-bold font-mono text-[#f5f5f7] mb-4">
               {editingSkill ? `Edit Skill: ${editingSkill.name}` : "Add New Skill"}
             </h2>
 
             <form
-              action={async (formData) => {
-                await onSaveAction(formData);
-                setIsModalOpen(false);
+              key={editingSkill?.id ?? "new"}
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                startTransition(async () => {
+                  await onSaveAction(formData);
+                  setIsModalOpen(false);
+                });
               }}
               className="space-y-4"
             >
               {editingSkill && <input type="hidden" name="id" value={editingSkill.id} />}
+              <input type="hidden" name="icon_public_id" value={iconPublicId} />
 
               <div>
                 <label className="block text-xs font-mono uppercase text-[#a1a1aa] mb-1">Skill Name *</label>
@@ -165,7 +195,10 @@ export default function SkillClientManager({ skills, onSaveAction, onDeleteActio
                     type="text"
                     name="icon_url"
                     value={iconUrl}
-                    onChange={(e) => setIconUrl(e.target.value)}
+                    onChange={(e) => {
+                      setIconUrl(e.target.value);
+                      setIconPublicId("");
+                    }}
                     placeholder="https://... or upload icon"
                     className="w-full bg-[#0f0f0f] border border-[#2a2a2a] text-[#f5f5f7] p-2 text-sm focus:outline-none focus:border-[#22d3ee]"
                   />
@@ -175,7 +208,7 @@ export default function SkillClientManager({ skills, onSaveAction, onDeleteActio
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      onChange={(e) => handleFileUpload(e, setIconUrl, "skills")}
+                      onChange={(e) => handleFileUpload(e, setIconUrl, setIconPublicId, "skills")}
                     />
                   </label>
                 </div>
@@ -193,7 +226,8 @@ export default function SkillClientManager({ skills, onSaveAction, onDeleteActio
                   <input
                     type="number"
                     name="sort_order"
-                    defaultValue={editingSkill?.sort_order ?? 0}
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(Number.parseInt(e.target.value || "0", 10) || 0)}
                     className="w-full bg-[#0f0f0f] border border-[#2a2a2a] text-[#f5f5f7] p-2 text-sm focus:outline-none focus:border-[#22d3ee]"
                   />
                 </div>
@@ -220,9 +254,80 @@ export default function SkillClientManager({ skills, onSaveAction, onDeleteActio
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#22d3ee] text-[#0f0f0f] px-4 py-2 font-mono text-xs uppercase font-bold hover:bg-[#06b6d4]"
+                  disabled={isPending}
+                  className="bg-[#22d3ee] text-[#0f0f0f] px-4 py-2 font-mono text-xs uppercase font-bold hover:bg-[#06b6d4] disabled:opacity-50"
                 >
-                  Save Skill
+                  {isPending ? "Saving..." : "Save Skill"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {isAutoSortOpen && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50"
+          onClick={() => setIsAutoSortOpen(false)}
+        >
+          <div
+            className="bg-[#151515] border border-[#2a2a2a] max-w-sm w-full p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-bold font-mono text-[#f5f5f7] mb-2">Auto Sort</h2>
+            <p className="text-xs text-[#a1a1aa] mb-5 leading-relaxed">
+              Urutkan ulang semua skill dan reset <span className="text-[#22d3ee]">sort_order</span> jadi
+              0, 1, 2, ... secara berurutan.
+            </p>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                startTransition(async () => {
+                  await onAutoSortAction(formData);
+                  setIsAutoSortOpen(false);
+                });
+              }}
+              className="space-y-3"
+            >
+              <label className="flex items-start gap-3 p-3 border border-[#2a2a2a] cursor-pointer hover:border-[#22d3ee] transition-colors">
+                <input type="radio" name="mode" value="name-asc" defaultChecked className="mt-0.5 accent-[#22d3ee]" />
+                <span className="text-sm">
+                  <span className="block text-[#f5f5f7]">Nama A → Z</span>
+                  <span className="block text-xs text-[#a1a1aa]">Urut abjad menaik</span>
+                </span>
+              </label>
+
+              <label className="flex items-start gap-3 p-3 border border-[#2a2a2a] cursor-pointer hover:border-[#22d3ee] transition-colors">
+                <input type="radio" name="mode" value="name-desc" className="mt-0.5 accent-[#22d3ee]" />
+                <span className="text-sm">
+                  <span className="block text-[#f5f5f7]">Nama Z → A</span>
+                  <span className="block text-xs text-[#a1a1aa]">Urut abjad menurun</span>
+                </span>
+              </label>
+
+              <label className="flex items-start gap-3 p-3 border border-[#2a2a2a] cursor-pointer hover:border-[#22d3ee] transition-colors">
+                <input type="radio" name="mode" value="group" className="mt-0.5 accent-[#22d3ee]" />
+                <span className="text-sm">
+                  <span className="block text-[#f5f5f7]">Berdasarkan Group</span>
+                  <span className="block text-xs text-[#a1a1aa]">Languages → Frameworks → Databases → Tools → Embedded, lalu A → Z</span>
+                </span>
+              </label>
+
+              <div className="flex justify-end gap-3 pt-3 border-t border-[#2a2a2a]">
+                <button
+                  type="button"
+                  onClick={() => setIsAutoSortOpen(false)}
+                  className="bg-[#2a2a2a] text-[#f5f5f7] px-4 py-2 font-mono text-xs hover:bg-[#333]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isPending}
+                  className="bg-[#22d3ee] text-[#0f0f0f] px-4 py-2 font-mono text-xs uppercase font-bold hover:bg-[#06b6d4] disabled:opacity-50"
+                >
+                  {isPending ? "Sorting..." : "Apply Sort"}
                 </button>
               </div>
             </form>
