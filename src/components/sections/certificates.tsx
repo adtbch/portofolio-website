@@ -21,29 +21,46 @@ export default async function Certificates() {
             {certs.map((cert) => (
               <div
                 key={cert.id}
-                className="flex flex-col justify-between border border-border bg-surface p-6 gap-4"
+                className="group flex flex-col border border-border bg-surface overflow-hidden"
               >
-                <div className="flex flex-col gap-2">
-                  <h3 className="font-heading text-lg font-semibold text-foreground">
-                    {cert.title}
-                  </h3>
-                  <p className="text-sm text-accent">{cert.issuer}</p>
-                  {cert.issued_at && (
-                    <span className="text-xs font-mono text-muted-foreground">
-                      {cert.issued_at}
-                    </span>
-                  )}
-                </div>
-                {cert.credential_url && (
+                {cert.image_url && (
                   <a
-                    href={cert.credential_url}
+                    href={cert.credential_url || cert.image_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-xs font-mono text-accent hover:underline"
+                    className="relative block aspect-[4/3] overflow-hidden border-b border-border bg-black/20"
                   >
-                    Lihat Kredensial &rarr;
+                    <img
+                      src={cert.image_url}
+                      alt={cert.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
                   </a>
                 )}
+                <div className="flex flex-1 flex-col justify-between gap-4 p-6">
+                  <div className="flex flex-col gap-2">
+                    <h3 className="font-heading text-lg font-semibold text-foreground">
+                      {cert.title}
+                    </h3>
+                    <p className="text-sm text-accent">{cert.issuer}</p>
+                    {cert.issued_at && (
+                      <span className="text-xs font-mono text-muted-foreground">
+                        {cert.issued_at}
+                      </span>
+                    )}
+                  </div>
+                  {cert.credential_url && (
+                    <a
+                      href={cert.credential_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-xs font-mono text-accent hover:underline"
+                    >
+                      Lihat Kredensial &rarr;
+                    </a>
+                  )}
+                </div>
               </div>
             ))}
           </div>
