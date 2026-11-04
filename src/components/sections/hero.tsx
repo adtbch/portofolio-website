@@ -13,8 +13,8 @@ interface HeroProps {
 
 export default function Hero({ name, role, description, cta_primary_label, cta_primary_href, cta_secondary_label, cta_secondary_href, image_url, available, available_text }: HeroProps) {
   return (
-    <section id="hero" className="py-16 sm:py-24 lg:py-32">
-      <Container className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+    <section id="hero" className="min-h-[calc(100svh-4rem)] flex items-center py-10 sm:py-14 lg:py-0">
+      <Container className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
         <div className="lg:col-span-5 flex justify-center order-1 lg:order-2">
           <div className="w-full max-w-[280px] sm:max-w-[340px]">
             {/* @ts-expect-error */}

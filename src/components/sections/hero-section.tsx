@@ -39,8 +39,8 @@ async function HeroData() {
 export default function HeroSection() {
   return (
     <Suspense fallback={
-      <section id="hero" className="py-12 sm:py-20 lg:py-32">
-        <div className="animate-pulse space-y-4">
+      <section id="hero" className="min-h-[calc(100svh-4rem)] flex items-center py-10 sm:py-14 lg:py-0">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 animate-pulse space-y-4">
           <div className="h-8 bg-muted rounded w-1/4"></div>
           <div className="h-4 bg-muted rounded w-1/2"></div>
           <div className="h-4 bg-muted rounded w-3/4"></div>

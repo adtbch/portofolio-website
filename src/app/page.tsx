@@ -30,7 +30,7 @@ function DatabaseSection({ children, label }: { children: ReactNode; label: stri
 export default function Home() {
   return (
     <>
-      <AnimatedSection><HeroSection /></AnimatedSection>
+      <HeroSection />
       <AnimatedSection><About /></AnimatedSection>
       <DatabaseSection label="education"><Education /></DatabaseSection>
       <DatabaseSection label="experience"><Experience /></DatabaseSection>
