@@ -46,12 +46,6 @@ export function Header() {
                     {item.label}
                   </SectionLink>
                 ))}
-                <SectionLink
-                  href="/admin"
-                  className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:rounded-sm"
-                >
-                  Admin Panel
-                </SectionLink>
               </nav>
 
         <div className="flex items-center gap-4">
